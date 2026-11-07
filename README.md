@@ -1,7 +1,7 @@
 # regime_anomaly_unsupervisioned
 
 
-Equipe
+Team
 * Alexandre Franco
 * Caio Cunha Franco
 * Rodrigo Franco
