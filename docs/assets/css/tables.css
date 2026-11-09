@@ -1,0 +1,10 @@
+/* Tables span the full content width. */
+.md-typeset table:not([class]) {
+  display: table;
+  width: 100%;
+}
+
+/* Sortable headers (tablesort). */
+.md-typeset th[role="columnheader"] {
+  cursor: pointer;
+}

@@ -1,0 +1,19 @@
+{
+  "language": "Language",
+  "nav.page": "Page",
+  "nav.overview": "Overview",
+  "nav.charts": "Charts",
+  "nav.test_model": "Test model",
+  "overview.title": "RT-IoT2022 · Regimes and anomalies",
+  "overview.caption": "Application structure — results not generated yet",
+  "overview.no_metrics": "The project structure is ready, but the notebooks and model have not been run yet. The indicators will appear here when `final_metrics.json` is available.",
+  "charts.title": "Interactive charts",
+  "charts.no_tables": "No tables published in `artifacts/tables/`.",
+  "charts.table": "Table",
+  "charts.x_axis": "X axis",
+  "charts.y_axis": "Y axis",
+  "model.title": "Test the model",
+  "model.unavailable": "The final model has not been generated yet. This screen will support CSV uploads and interactive predictions after notebook 03 is defined.",
+  "model.upload": "Test CSV",
+  "model.error": "The model could not be applied: {error}"
+}

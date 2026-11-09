@@ -1,15 +1,46 @@
 [project]
 name = "regime-anomaly-unsupervisioned"
 version = "0.1.0"
+description = "Unsupervised regime and anomaly analysis for RT-IoT2022 network traffic."
+readme = "README.md"
+authors = [
+    { name = "Alexandre Franco" },
+    { name = "Caio Cunha Franco" },
+    { name = "Rodrigo Franco" },
+]
 requires-python = ">=3.12"
 dependencies = [
+    "joblib>=1.6.0",
     "matplotlib>=3.11.2",
     "numpy>=2.5.4",
     "pandas>=3.1.1",
+    "plotly>=7.1.0",
     "requests>=2.34.2",
     "rich>=15.0.0",
     "scikit-learn>=1.9.1",
     "seaborn>=0.13.2",
+    "streamlit>=1.67.0",
+]
+
+[project.urls]
+Repository = "https://github.com/MBA-Data-Science-Unifor/Regime-Anomaly-Unsupervisioned"
+
+[project.scripts]
+regime-analysis = "regime_anomaly.pipeline:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/regime_anomaly"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.uv-cache",
+    "/.venv",
+    "/artifacts/data/raw",
+    "/site",
 ]
 
 [dependency-groups]
@@ -18,6 +49,7 @@ analysis = [
 ]
 dev = [
     "mypy>=2.4.1",
+    "pandas-stubs>=3.1.0.261029",
     "pre-commit>=4.7.0",
     "pytest>=9.2.0",
     "pytest-asyncio>=1.4.1.post1",
@@ -25,11 +57,33 @@ dev = [
     "ruff>=0.17.4",
 ]
 docs = [
+    "invoke>=2.2.1",
     "mkdocs>=1.6.1",
+    "mkdocs-awesome-pages-plugin>=2.10.1",
+    "mkdocs-glightbox>=0.5.3",
+    "mkdocs-jupyter>=0.27.0",
     "mkdocs-material>=9.8.1",
+    "mkdocs-print-site-plugin>=2.9",
 ]
 test = [
     "pytest>=9.2.0",
     "pytest-asyncio>=1.4.1.post1",
     "pytest-cov>=7.1.0",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+files = ["src"]
+
+[[tool.mypy.overrides]]
+module = ["joblib", "plotly", "plotly.*"]
+ignore_missing_imports = true

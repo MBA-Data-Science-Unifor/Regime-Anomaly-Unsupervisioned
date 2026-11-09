@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Tests and quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          version: latest-known
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Install Python
+        run: uv python install 3.12
+
+      - name: Sync locked environment
+        run: uv sync --locked --group dev --group test --group docs
+
+      - name: Check formatting and lint
+        run: uv run ruff check src tests tasks.py
+
+      - name: Check types
+        run: uv run mypy
+
+      - name: Run tests with coverage
+        run: uv run pytest --cov=regime_anomaly --cov-report=term-missing
+
+      - name: Build documentation
+        run: uv run invoke docs --build --strict
+
+      - name: Build Python package
+        run: uv build

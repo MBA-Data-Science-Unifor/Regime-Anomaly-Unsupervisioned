@@ -1,0 +1,19 @@
+{
+  "language": "Idioma",
+  "nav.page": "Página",
+  "nav.overview": "Visão geral",
+  "nav.charts": "Gráficos",
+  "nav.test_model": "Testar modelo",
+  "overview.title": "RT-IoT2022 · Regimes e anomalias",
+  "overview.caption": "Estrutura da aplicação — resultados ainda não gerados",
+  "overview.no_metrics": "O projeto está estruturado, mas os notebooks e o modelo ainda não foram executados. Quando `final_metrics.json` existir, os indicadores aparecerão aqui.",
+  "charts.title": "Gráficos interativos",
+  "charts.no_tables": "Nenhuma tabela publicada em `artifacts/tables/`.",
+  "charts.table": "Tabela",
+  "charts.x_axis": "Eixo X",
+  "charts.y_axis": "Eixo Y",
+  "model.title": "Testar o modelo",
+  "model.unavailable": "O modelo final ainda não foi gerado. Esta tela receberá upload CSV e predição interativa após a definição do notebook 03.",
+  "model.upload": "CSV de teste",
+  "model.error": "Não foi possível aplicar o modelo: {error}"
+}

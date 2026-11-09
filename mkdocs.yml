@@ -1,0 +1,54 @@
+site_name: IoT Attack and Regime Detection
+site_description: Novelty detection and traffic analysis using the RT-IoT2022 dataset.
+repo_url: https://github.com/MBA-Data-Science-Unifor/Regime-Anomaly-Unsupervisioned
+repo_name: Regime-Anomaly-Unsupervisioned
+
+nav:
+  - Overview: index.md
+  - Methodology: methodology.md
+  - Problem Understanding: business-understanding.md
+  - Success Criteria: success-criteria.md
+  - Data Source: data-source.md
+  - Data Understanding: data-understanding.md
+  - Exploratory Analysis: exploratory-analysis.md
+  - Data Preparation: data-preparation.md
+  - Modeling: modeling.md
+  - Evaluation: evaluation.md
+  - Implementation: implementation.md
+  - Project Structure: project-analysis.md
+  - PBL Journey:
+      - Problem Canvas: pbl/problem-canvas.md
+      - PBL Board: pbl/pbl-board.md
+  - Status: status.md
+
+plugins:
+  - search
+
+theme:
+  name: material
+  language: pt-BR
+  custom_dir: docs/overrides
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+    - scheme: slate
+      primary: custom
+      accent: custom
+  features:
+    - navigation.top
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+
+extra_css:
+  - assets/css/fonts.css
+  - assets/css/brand.css
+  - assets/css/tables.css

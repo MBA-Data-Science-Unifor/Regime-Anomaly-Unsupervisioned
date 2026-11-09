@@ -1,119 +1,144 @@
-# Regime & Anomaly Unsupervised Analysis
+# RT-IoT2022 — Regimes e Anomalias
 
-Unsupervised analysis of energy consumption patterns and anomalies in a small-scale steel industry.
+Projeto em desenvolvimento para detecção não supervisionada de regimes e anomalias
+em tráfego IoT com a base RT-IoT2022. A apresentação dos resultados é feita
+exclusivamente em Streamlit.
 
-## Team
+## Equipe
 
 - Alexandre Franco
 - Caio Cunha Franco
 - Rodrigo Franco
 
-## Project Overview
+O histórico de alterações e a descrição das contribuições individuais serão
+adicionados futuramente.
 
-This project analyzes electricity consumption data from a small-scale steel industry in South Korea. The goal is to explore consumption behavior, detect anomalous energy usage, and identify distinct operational regimes using unsupervised learning techniques.
+## Estado atual
 
-The dataset was collected from **DAEWOO Steel Co. Ltd**, located in **Gwangyang, South Korea**. The company produces several types of coils, steel plates, and iron plates. Electricity consumption information is maintained in a cloud-based system, while energy consumption data is obtained from the **Korea Electric Power Corporation** website ([pccs.kepco.go.kr](https://pccs.kepco.go.kr)). Daily, monthly, and annual perspectives are calculated and displayed.
+O repositório contém a estrutura inicial do projeto. A análise, a escolha do modelo,
+as métricas e os resultados finais ainda não estão concluídos.
 
-## Dataset
+Os três notebooks do projeto estão em `artifacts/notebooks/`:
 
-- **Source:** [Steel Industry Energy Consumption](https://archive.ics.uci.edu/ml/datasets/Steel+Industry+Energy+Consumption) — UCI Machine Learning Repository
-- **Donation date:** August 13, 2023
-- **Instances:** 35,040
-- **Features:** 9
-- **Feature types:** Real and categorical
-- **Associated task:** Regression
-- **Subject area:** Physics and Chemistry
+1. `01_EDA.ipynb` — análise exploratória;
+2. `02_preprocessing.ipynb` — preparação e pré-processamento;
+3. `03_Modeling.ipynb` — modelagem, ainda em desenvolvimento.
 
-## Objectives
-
-- Perform exploratory data analysis (EDA) to understand energy consumption patterns.
-- Apply unsupervised learning techniques to detect anomalies in energy usage.
-- Identify different consumption regimes, such as peak periods and seasonal variations.
-- Evaluate the feasibility of regression-based consumption forecasting using the available features.
-- Produce clear visualizations and reproducible analysis notebooks.
-
-## Repository Structure
+## Estrutura
 
 ```text
-.
+artifacts/
 ├── data/
-│   └── steel_industry_energy_consumption.csv  # Original dataset
+│   ├── raw/RT_IOT2022       # base local
+│   └── processed/            # dados processados futuros
 ├── notebooks/
-│   ├── 01_exploratory_data_analysis.ipynb    # Exploratory data analysis
-│   ├── 02_anomaly_detection.ipynb            # Anomaly detection
-│   └── 03_regime_identification.ipynb        # Regime identification
-├── src/
-│   ├── data_preprocessing.py                 # Preprocessing functions
-│   ├── anomaly_detection.py                  # Anomaly detection algorithms
-│   └── visualization.py                      # Visualization utilities
-├── requirements.txt                          # Project dependencies
-└── README.md                                 # Project documentation
+│   ├── 01_EDA.ipynb
+│   ├── 02_preprocessing.ipynb
+│   └── 03_Modeling.ipynb
+├── tables/                   # tabelas futuras
+├── images/                   # imagens futuras
+├── models/                   # modelo final futuro
+└── metadata/                 # métricas e manifesto futuros
+docs/
+├── index.md                  # visão geral do MkDocs
+├── methodology.md            # metodologia do projeto
+├── business-understanding.md # entendimento do problema
+├── success-criteria.md       # critérios de sucesso
+├── data-source.md            # fonte dos dados
+├── data-understanding.md     # entendimento dos dados
+├── exploratory-analysis.md   # roteiro da EDA
+├── data-preparation.md       # preparação planejada
+├── modeling.md               # modelagem planejada
+├── evaluation.md             # protocolo de avaliação
+├── implementation.md         # arquitetura de implementação
+├── project-analysis.md       # estrutura planejada
+├── pbl/                      # canvas e quadro PBL
+└── status.md                 # estado atual
+src/
+├── app.py                    # aplicação Streamlit
+└── regime_anomaly/
+    ├── locales/              # traduções pt-BR e en da interface
+    └── i18n.py               # carregamento das traduções
+tests/                        # testes estruturais
+mkdocs.yml                    # configuração da documentação
 ```
 
-## Installation
+O Streamlit será responsável por ler tabelas, imagens, métricas e o modelo publicados
+em `artifacts/`. Ele não deve executar treinamento.
 
-1. Clone the repository:
+## Idiomas
 
-   ```bash
-   git clone https://github.com/MBA-Data-Science-Unifor/Regime-Anomaly-Unsupervisioned.git
-   cd Regime-Anomaly-Unsupervisioned
-   ```
+A interface Streamlit usa português brasileiro (`pt-BR`) por padrão e permite a
+troca para inglês. Os textos ficam separados do código em
+`src/regime_anomaly/locales/`.
 
-2. Create and activate a virtual environment:
+A documentação em `docs/` permanece escrita em inglês. Apenas os controles do tema
+MkDocs são apresentados em português brasileiro.
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate      # Linux / macOS
-   venv\Scripts\activate         # Windows
-   ```
+## Ambiente
 
-3. Install the required dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## Usage
-
-1. **Exploratory Data Analysis**  
-   Run `notebooks/01_exploratory_data_analysis.ipynb` to inspect distributions, correlations, and temporal consumption trends.
-
-2. **Anomaly Detection**  
-   Use `notebooks/02_anomaly_detection.ipynb` to apply anomaly detection methods such as Isolation Forest, Local Outlier Factor (LOF), or Autoencoders.
-
-3. **Regime Identification**  
-   Use `notebooks/03_regime_identification.ipynb` to apply clustering techniques such as K-Means or DBSCAN and segment consumption patterns into distinct regimes.
-
-Scripts can also be executed directly:
+Python 3.12 ou superior e [uv](https://docs.astral.sh/uv/) são necessários.
 
 ```bash
-python src/data_preprocessing.py --input data/steel_industry_energy_consumption.csv
-python src/anomaly_detection.py --method isolation_forest
+uv sync --locked
 ```
 
-## Expected Results
+As dependências devem ser adicionadas pelo terminal, sem editar o lockfile manualmente:
 
-- Time-series visualizations of energy consumption by hour, day, and month.
-- Detection of anomalous consumption peaks and possible contributing factors.
-- Clustering of periods with similar consumption behavior, representing different operational regimes.
-- Regression models for forecasting consumption based on variables such as load and day of the week.
-- Reproducible notebooks and reusable preprocessing, detection, and visualization code.
+```bash
+uv add nome-da-biblioteca
+uv add --group dev nome-da-biblioteca-de-desenvolvimento
+```
 
-## Contributing
+Os grupos opcionais definidos em `pyproject.toml` separam o ambiente de análise
+(`analysis`), documentação (`docs`), testes (`test`) e desenvolvimento (`dev`).
 
-Contributions are welcome. If you would like to improve the analysis, fix an issue, or add a new method, please open an issue or submit a pull request.
+## Execução
 
-## License
+Aplicação Streamlit:
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+```bash
+uv run streamlit run src/app.py
+```
 
-## Acknowledgments
+Preparação dos diretórios e exibição do contrato de artefatos, sem treinamento:
 
-- **DAEWOO Steel Co. Ltd** for providing the data.
-- **Korea Electric Power Corporation** for the energy consumption information.
-- **UCI Machine Learning Repository** for hosting the dataset.
-- **MBA in Data Science at Unifor** for support and encouragement.
+```bash
+uv run regime-analysis
+```
 
----
+Documentação local:
 
-This README can be updated as the project evolves and new analyses, methods, or results are added.
+```bash
+uv run --group docs invoke docs
+```
+
+Build estrito do MkDocs:
+
+```bash
+uv run --group docs invoke docs --build --strict
+```
+
+Testes e lint:
+
+```bash
+uv run --group test pytest
+uv run --group dev ruff check src tests tasks.py
+```
+
+## Qualidade e integração contínua
+
+O workflow `.github/workflows/ci.yml` executa automaticamente em pushes, pull
+requests e por acionamento manual. Ele usa o `uv.lock` para validar lint, tipos,
+testes com cobertura, documentação e o pacote Python.
+
+Para reproduzir localmente as mesmas verificações:
+
+```bash
+uv sync --locked --group dev --group test --group docs
+uv run ruff check src tests tasks.py
+uv run mypy
+uv run pytest --cov=regime_anomaly --cov-report=term-missing
+uv run invoke docs --build --strict
+uv build
+```

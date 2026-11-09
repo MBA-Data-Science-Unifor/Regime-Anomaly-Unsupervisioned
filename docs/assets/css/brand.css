@@ -1,0 +1,49 @@
+/*
+ * Documentation palette.
+ *
+ * The values below are a neutral starting point. To apply your organization's visual
+ * identity, change only the hexadecimal values of the `--brand-*` variables; the theme
+ * blocks below will update automatically.
+ */
+:root {
+  /* Primary */
+  --brand-deep-blue: #1B4965;
+  --brand-navy-blue: #123047;
+  --brand-cobalt-blue: #2A6F97;
+  --brand-light-blue: #62B6CB;
+
+  /* Secondary */
+  --brand-green: #74C69D;
+  --brand-yellow: #F4D35E;
+
+  /* Complementary accents */
+  --brand-coral: #EE6C4D;
+  --brand-pink: #F2A6A6;
+  --brand-orange: #F49D6E;
+  --brand-purple: #8E7DBE;
+
+  /* Semantic (feedback) */
+  --brand-success: #2BA86B;
+  --brand-warning: #F2A93B;
+  --brand-danger: #E23D4F;
+  --brand-info: #3D8DC8;
+}
+
+/* Light theme */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: var(--brand-deep-blue);
+  --md-primary-fg-color--light: var(--brand-light-blue);
+  --md-primary-fg-color--dark: var(--brand-navy-blue);
+  --md-accent-fg-color: var(--brand-cobalt-blue);
+  --md-default-bg-color: #F5F7FA;
+}
+
+/* Dark theme */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #163F5F;
+  --md-primary-fg-color--light: var(--brand-light-blue);
+  --md-primary-fg-color--dark: #0E2638;
+  --md-accent-fg-color: var(--brand-light-blue);
+  --md-default-bg-color: #06141F;
+  --md-typeset-a-color: var(--brand-light-blue);
+}
