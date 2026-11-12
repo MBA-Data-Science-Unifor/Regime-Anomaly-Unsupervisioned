@@ -1,27 +1,30 @@
 # Data Preparation
 
-Data preparation will be developed in
-`artifacts/notebooks/02_preprocessing.ipynb` and, once approved, extracted into
-reusable functions under `src/regime_anomaly/`.
+Preparation will be implemented in artifacts/notebooks/02_preprocessing.ipynb and then
+extracted into reusable functions.
 
-## Planned steps
+## Planned pipeline
 
-- normalize column names;
-- separate identifiers, features, and the external label;
-- explicitly handle missing and infinite values;
-- remove uninformative columns with justification;
-- encode categorical features;
-- transform or scale numerical features when necessary;
-- create reproducible training, calibration, and test splits;
-- persist preprocessing together with the model.
+1. parse date with day-first semantics;
+2. preserve a raw immutable copy;
+3. separate date, Load_Type, numerical features, and calendar categories;
+4. derive approved temporal features without leaking future information;
+5. standardize numerical features;
+6. one-hot encode WeekStatus and Day_of_week;
+7. fit every transformation on the appropriate training period only;
+8. serialize preprocessing with the selected model.
 
-## Leakage prevention
+## Leakage boundary
 
-`Attack_type` must not be used as a feature in unsupervised models. Any use of the label
-to define a reference, calibrate a threshold, or evaluate performance must be documented
-separately.
+Load_Type is not a training feature. Its cardinality defines the current three-regime
+hypothesis, while its values remain reserved for later external assessment. Time-aware
+splits are preferred over random-only splits because adjacent 15-minute observations are
+not independent.
 
-## Future outputs
+## Decisions still open
 
-Processed data will be written to `artifacts/data/processed/`. No final processed file
-has been published at this stage.
+- treatment of skewed variables and extreme values;
+- whether NSM remains numeric or becomes cyclical sine/cosine features;
+- redundancy handling for highly associated electrical variables;
+- feature sets for regime and anomaly tasks;
+- calibration strategy for anomaly thresholds.

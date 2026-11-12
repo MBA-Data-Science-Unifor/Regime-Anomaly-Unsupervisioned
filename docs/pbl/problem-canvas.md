@@ -2,35 +2,36 @@
 
 ## Problem
 
-Investigate patterns and unusual behavior in IoT network flows using the RT-IoT2022
-dataset.
+Identify recurring operating regimes and unusual energy-consumption observations in a
+steel industry dataset without using Load_Type values to train the unsupervised models.
 
-## Future users
+## Users
 
-- the team responsible for data analysis;
-- security professionals interested in flow triage;
-- academic project evaluators.
+- analysts investigating industrial energy behavior;
+- teams responsible for energy planning and operational review;
+- academic reviewers of the project methodology.
 
 ## Expected value
 
-- reproducible analysis;
-- better understanding of traffic characteristics;
-- prioritization of observations for investigation;
-- model visualization and testing through an accessible interface.
+- reproducible understanding of energy and power-quality patterns;
+- interpretable three-regime profiles;
+- prioritized observations for investigation;
+- transparent documentation of assumptions and limitations.
 
 ## Constraints
 
-- the project is still under development;
-- the dataset is historical and limited to its collection environment;
-- there is no validation on a production network;
-- the cost of false positives has not yet been defined;
-- the model and threshold have not yet been selected.
+- historical data from one industrial context;
+- no causal or equipment-failure labels;
+- three regimes are a problem hypothesis, not a proven physical truth;
+- anomaly contamination is currently an exploratory assumption;
+- no production or financial validation exists.
 
 ## Required evidence
 
-- dataset documentation;
-- reviewed EDA;
-- model comparison;
-- out-of-sample evaluation;
-- error analysis;
-- documented limitations.
+- source and data contract;
+- reviewed EDA and initial findings;
+- time-aware preparation;
+- model and stability comparison;
+- frozen external evaluation;
+- limitations and failure analysis;
+- reproducible artifact manifest.

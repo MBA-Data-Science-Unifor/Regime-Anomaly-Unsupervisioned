@@ -2,33 +2,30 @@
 
 ## Context
 
-IoT devices produce heterogeneous network flows and may be either targets or vectors
-of attacks. This project studies recurring patterns and unusual observations in the
-RT-IoT2022 dataset without assuming in advance which algorithm will become the final
-model.
+Industrial electricity demand varies with production intensity, reactive power,
+calendar effects, and equipment behavior. Understanding recurring operating regimes can
+support energy planning and help prioritize unusual measurements for investigation.
 
-## General objective
+## Objective
 
-Build a reproducible analysis that helps distinguish traffic behaviors, investigate
-anomalies, and eventually test a model through a web application.
+Build a reproducible unsupervised analysis of the Steel Industry Energy Consumption
+dataset that:
+
+- describes energy and power-factor behavior;
+- investigates structure compatible with three operating regimes;
+- signals unusual observations without claiming a fault diagnosis;
+- prepares evidence for later model comparison and a read-only application.
 
 ## Guiding questions
 
-- Which features best describe the dataset's flows?
-- Are there natural traffic regimes or clusters?
-- Which observations deviate from the identified patterns?
-- How can the available labels be used to evaluate usefulness without leakage?
-- Which errors are more costly: false positives or undetected attacks?
+- Which variables best distinguish low, medium, and high operating behavior?
+- Are the three expected regimes geometrically coherent without using their labels?
+- How do hour, weekday, and weekend behavior affect the regimes?
+- Which observations are globally unusual?
+- Which findings remain stable across time and resampling?
 
-## Current scope
+## Boundaries
 
-The project is under development. There is no selected model, operational threshold,
-final metric, or deployment recommendation yet.
-
-## Out of scope at this stage
-
-- automatic traffic blocking;
-- automated incident response;
-- guaranteed generalization to another network;
-- causal diagnosis of attacks;
-- production deployment.
+The work does not infer causality, equipment failure, financial savings, or production
+quality. Load_Type values are not used for unsupervised fitting. No supervised model,
+operational threshold, or production recommendation is approved at this stage.

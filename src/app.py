@@ -16,7 +16,7 @@ from regime_anomaly.i18n import (
     translate,
 )
 
-st.set_page_config(page_title="RT-IoT2022", page_icon="🛡️", layout="wide")
+st.set_page_config(page_title="Steel Energy Regimes", page_icon="⚡", layout="wide")
 store = ArtifactStore()
 
 
@@ -72,7 +72,7 @@ def test_model(locale: str) -> None:
 
 
 PAGES = {"overview": overview, "charts": charts, "test_model": test_model}
-st.sidebar.title("RT-IoT2022")
+st.sidebar.title("Steel Energy")
 locale = st.sidebar.selectbox(
     translate("language", DEFAULT_LOCALE),
     SUPPORTED_LOCALES,

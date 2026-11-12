@@ -1,25 +1,29 @@
-site_name: IoT Attack and Regime Detection
-site_description: Novelty detection and traffic analysis using the RT-IoT2022 dataset.
+site_name: Steel Energy Regimes and Anomalies
+site_description: Unsupervised analysis of operating regimes and unusual energy-consumption observations in a steel industry dataset.
 repo_url: https://github.com/MBA-Data-Science-Unifor/Regime-Anomaly-Unsupervisioned
 repo_name: Regime-Anomaly-Unsupervisioned
 
 nav:
   - Overview: index.md
-  - Methodology: methodology.md
   - Problem Understanding: business-understanding.md
+  - Methodology: methodology.md
   - Success Criteria: success-criteria.md
-  - Data Source: data-source.md
-  - Data Understanding: data-understanding.md
-  - Exploratory Analysis: exploratory-analysis.md
-  - Data Preparation: data-preparation.md
-  - Modeling: modeling.md
-  - Evaluation: evaluation.md
-  - Implementation: implementation.md
-  - Project Structure: project-analysis.md
+  - Data:
+      - Source: data-source.md
+      - Understanding: data-understanding.md
+      - Initial Findings: initial-findings.md
+      - Preparation: data-preparation.md
+  - Analysis:
+      - Exploratory Analysis: exploratory-analysis.md
+      - Modeling: modeling.md
+      - Evaluation: evaluation.md
+  - Delivery:
+      - Implementation: implementation.md
+      - Project Structure: project-analysis.md
+      - Status: status.md
   - PBL Journey:
       - Problem Canvas: pbl/problem-canvas.md
       - PBL Board: pbl/pbl-board.md
-  - Status: status.md
 
 plugins:
   - search
@@ -39,6 +43,8 @@ theme:
       accent: custom
   features:
     - navigation.top
+    - navigation.sections
+    - navigation.indexes
     - content.code.copy
 
 markdown_extensions:
@@ -47,8 +53,14 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 extra_css:
   - assets/css/fonts.css
   - assets/css/brand.css
   - assets/css/tables.css
+

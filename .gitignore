@@ -219,3 +219,27 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Generated analysis artifacts and local datasets
+# Keep directory placeholders, but regenerate contents from the notebooks/pipeline.
+artifacts/data/raw/*
+!artifacts/data/raw/.gitkeep
+artifacts/data/processed/*
+!artifacts/data/processed/.gitkeep
+artifacts/images/*
+!artifacts/images/.gitkeep
+artifacts/tables/*
+!artifacts/tables/.gitkeep
+artifacts/models/*
+!artifacts/models/.gitkeep
+artifacts/metadata/*
+!artifacts/metadata/.gitkeep
+
+# Temporary notebook executions and large serialized outputs
+artifacts/notebooks/.*.ipynb
+*.joblib
+*.pkl
+*.pickle
+*.parquet
+*.feather
+*.onnx

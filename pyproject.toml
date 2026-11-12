@@ -1,7 +1,7 @@
 [project]
 name = "regime-anomaly-unsupervisioned"
 version = "0.1.0"
-description = "Unsupervised regime and anomaly analysis for RT-IoT2022 network traffic."
+description = "Unsupervised regime and anomaly analysis for steel-industry energy consumption."
 readme = "README.md"
 authors = [
     { name = "Alexandre Franco" },

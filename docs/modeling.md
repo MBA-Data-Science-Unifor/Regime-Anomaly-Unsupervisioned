@@ -1,31 +1,29 @@
 # Modeling
 
-Modeling will be recorded in `artifacts/notebooks/03_Modeling.ipynb`.
+Final modeling belongs in artifacts/notebooks/03_Modeling.ipynb. Algorithms shown in the
+EDA are baselines, not a selected production model.
 
-## Candidates to investigate
+## Current hypothesis
 
-- centroid- or medoid-based clustering;
-- density-based methods;
-- Isolation Forest;
-- Local Outlier Factor;
-- other approaches justified by the EDA.
+Primary regime models use exactly three groups, derived from the number of Load_Type
+categories without using their identities during fitting.
 
-This list is a roadmap, not a decision. The final model will be selected only after the
-protocol is defined and a reproducible comparison is completed.
+## Baselines carried forward
 
-## Minimum record for each experiment
+- K-Means for scalable, interpretable centroid profiles;
+- three-component diagonal-covariance GMM for probabilistic overlap;
+- Isolation Forest for global anomaly scoring.
 
-- data version;
-- features and preprocessing;
-- data split used;
-- algorithm, parameters, and seed;
-- time and resources consumed;
-- appropriate internal and external metrics;
-- observed limitations.
+## Deferred candidates
 
-## Future final artifact
+DBSCAN/HDBSCAN, hierarchical clustering, K-Medoids, spectral clustering, SOM, UMAP,
+autoencoders, LOF, One-Class SVM, and robust covariance methods remain documented
+alternatives. They should be introduced only when their assumptions answer a specific
+failure of the baselines.
 
-The approved model and its preprocessing must be serialized under `artifacts/models/`.
-Metadata and metrics will be stored under `artifacts/metadata/`.
+## Required experiment record
 
-No model has been selected in this version.
+Every experiment must record data hash, time split, feature set, fitted preprocessing,
+algorithm, parameters, seed, runtime, internal metrics, stability, cluster sizes,
+temporal drift, and limitations. The final model must be serialized with preprocessing
+under artifacts/models and accompanied by metadata.

@@ -1,4 +1,4 @@
-"""Minimal RT-IoT2022 loading helpers for future notebooks."""
+"""Loading helpers for the Steel Industry Energy Consumption dataset."""
 
 from __future__ import annotations
 
@@ -9,8 +9,8 @@ import pandas as pd
 
 from .config import RAW_DIR
 
-DEFAULT_DATASET = RAW_DIR / "RT_IOT2022"
-LABEL_COLUMN = "attack_type"
+DEFAULT_DATASET = RAW_DIR / "Steel_industry_data.csv"
+LABEL_COLUMN = "load_type"
 
 
 def snake_case(value: str) -> str:

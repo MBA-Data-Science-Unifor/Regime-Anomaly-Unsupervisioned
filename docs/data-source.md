@@ -2,37 +2,30 @@
 
 ## Dataset
 
-The project uses the **RT-IoT2022** dataset, available locally at:
+The project uses **Steel Industry Energy Consumption**, published by the
+[UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/851/steel+industry+energy+consumption).
 
-```text
-artifacts/data/raw/RT_IOT2022
-```
+Local path:
 
-The code does not download the raw file automatically, and notebooks must not modify
-it. Derived data must be written to `artifacts/data/processed/`.
+    artifacts/data/raw/Steel_industry_data.csv
 
-## General contents
+The project never downloads or edits the raw file automatically. Derived outputs belong
+under artifacts/data/processed.
 
-The dataset describes IoT network flows. Its fields include:
+## Provenance
 
-- source and destination ports;
-- protocol and service;
-- flow duration;
-- packet counts and rates;
-- header and payload sizes;
-- protocol flags;
-- inter-arrival times;
-- windows and active and idle periods;
-- the traffic type recorded in `Attack_type`.
+The measurements come from DAEWOO Steel Co. Ltd in Gwangyang, South Korea. The UCI
+record reports 35,040 instances, no missing values, real and categorical features, and a
+CC BY 4.0 license. The dataset citation is:
 
-## Provenance and versioning
+Sathishkumar V E, Changsun Shin, and Yongyun Cho (2021), Steel Industry Energy
+Consumption, UCI Machine Learning Repository, DOI 10.24432/C52G8C.
 
-Before the model is published, the project must record the following in its manifest:
+## Measurement grain
 
-- official source and bibliographic reference;
-- acquisition date;
-- license and terms of use;
-- file size and SHA-256 hash;
-- version used in the analysis.
+Each row is a 15-minute observation during 2018. The fields cover active energy use,
+lagging and leading reactive energy, CO2, power factors, seconds from midnight,
+weekday/weekend context, day of week, and load type.
 
-These details still need to be consolidated; there is no final manifest at this stage.
+A future manifest must record the acquisition date, byte size, SHA-256 hash, UCI
+identifier, DOI, and license.

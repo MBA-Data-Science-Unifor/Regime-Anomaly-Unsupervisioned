@@ -1,27 +1,26 @@
 # Project Status
 
-## Current state
-
-The project is in the structuring and notebook-development phase.
-
 | Item | State |
 | --- | --- |
-| Local dataset | available under `artifacts/data/raw/` |
-| EDA notebook | created, in development |
-| Preparation notebook | created, in development |
-| Modeling notebook | created, in development |
-| Final model | not defined |
-| Final metrics | not available |
-| Presentation artifacts | not yet published |
-| Streamlit structure | prepared |
-| MkDocs | configured |
+| Steel Industry raw dataset | available locally |
+| EDA notebook | implemented; review in progress |
+| Data dictionary | generated locally |
+| Exploratory figures | 20 generated locally |
+| Exploratory tables | 5 generated locally |
+| Three-regime K-Means/GMM | exploratory baselines complete |
+| Isolation Forest | exploratory baseline complete |
+| Preparation notebook | pending implementation |
+| Final model protocol | pending |
+| Frozen evaluation | pending |
+| Streamlit | scaffold available |
+| MkDocs | updated to current dataset and methodology |
 
 ## Next steps
 
-1. Complete and review the EDA.
-2. Approve the preparation decisions.
-3. Define the modeling protocol and criteria.
-4. Run and compare the experiments.
-5. Evaluate the frozen model.
-6. Publish artifacts and complete the Streamlit application.
-7. Record the change history and team contributions.
+1. review and approve EDA assumptions;
+2. implement leakage-safe, time-aware preparation;
+3. define frozen model-comparison and evaluation protocols;
+4. assess stability, drift, and sensitivity;
+5. select and serialize the final pipeline;
+6. publish integrity metadata and update Streamlit;
+7. record contribution history.

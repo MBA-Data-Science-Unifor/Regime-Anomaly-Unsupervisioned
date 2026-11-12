@@ -2,31 +2,32 @@
 
 ## What we know
 
-- the RT-IoT2022 dataset is available locally;
-- flow features and a traffic-type label are available;
-- the project must produce documentation, artifacts, and a Streamlit application;
-- the three notebooks have been created.
+- the UCI steel-industry dataset is available locally;
+- it contains 35,040 quarter-hour observations and 11 columns;
+- there are no missing or exact duplicate rows in the local file;
+- Load_Type contains three categories;
+- EDA artifacts and baselines can be reproduced locally;
+- generated and heavy files are excluded from Git.
 
-## What we need to investigate
+## What we are investigating
 
-- feature quality and distribution;
-- label semantics and reliability;
-- an appropriate definition of normality and anomaly;
-- algorithms compatible with the data;
-- metrics and selection criteria;
-- generalization capability.
+- whether three unsupervised regimes are stable and operationally interpretable;
+- how calendar effects and correlated electrical variables affect segmentation;
+- which extreme observations are legitimate regime behavior;
+- how anomaly rankings change with assumptions and time;
+- which preparation and model choices generalize beyond the EDA.
 
 ## Work plan
 
-| Stage | Expected evidence | State |
+| Stage | Evidence | State |
 | --- | --- | --- |
-| EDA | tables, charts, and hypotheses | in development |
-| Preparation | reproducible decisions | in development |
-| Modeling | recorded comparison | pending |
-| Evaluation | metrics and error analysis | pending |
-| Publication | artifacts and final application | pending |
+| EDA | dictionary, figures, tables, hypotheses | review in progress |
+| Preparation | fitted, leakage-safe transformations | pending |
+| Modeling | reproducible comparison and stability | pending |
+| Evaluation | frozen metrics and external assessment | pending |
+| Publication | manifest, final model, application | pending |
 
 ## Reflection
 
-The board will be updated when reviewed results become available. The change history
-and authorship will be added at a later stage.
+The current EDA supports continued investigation of three regimes, but it does not
+validate class correspondence, causal explanations, or production thresholds.

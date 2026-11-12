@@ -1,33 +1,32 @@
 # Success Criteria
 
-The final criteria will be approved before the final evaluation. This page records the
-expected format without presenting targets as already validated.
+## Data
 
-## Data criteria
+- document 11 fields, units, roles, and observed domains;
+- preserve the raw CSV unchanged;
+- verify missing values, duplicates, types, frequency, and time coverage;
+- make preparation reproducible and leakage-safe.
 
-- documented schema and grain;
-- identifier columns and labels separated from training features;
-- missing, infinite, duplicate, and constant values handled explicitly;
-- reproducible training, calibration, and test splits.
+## Unsupervised modeling
 
-## Modeling criteria
+- use exactly three groups for the primary regime hypothesis;
+- record seeds, preprocessing, features, and parameters;
+- compare at least two compatible clustering geometries;
+- assess compactness, separation, stability, and temporal behavior;
+- treat anomaly contamination and thresholds as explicit assumptions.
 
-- comparison of more than one approach;
-- recorded seeds and parameters;
-- no label leakage into unsupervised training;
-- model and preprocessing serialized together;
-- documented rationale for the selected model.
+## Evaluation
 
-## Evaluation criteria
+- keep Load_Type outside training features;
+- do not use supervised metrics during EDA;
+- reserve external agreement measures for the frozen evaluation protocol;
+- report failure cases, sensitivity, and limitations;
+- distinguish exploratory findings from approved conclusions.
 
-- metrics appropriate for class imbalance;
-- confusion matrix and analysis by traffic type;
-- evaluated threshold stability and sensitivity;
-- documented limitations and failure cases.
+## Delivery
 
-## Delivery criteria
-
-- reproducible artifacts under `artifacts/`;
-- a Streamlit application able to read results and test the model;
-- MkDocs documentation built without errors;
-- passing structural and inference tests.
+- keep generated or heavy artifacts outside Git;
+- reproduce artifacts from notebooks or the future pipeline;
+- build MkDocs in strict mode;
+- keep Streamlit read-only with respect to training;
+- maintain passing tests and an integrity manifest before final publication.

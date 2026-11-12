@@ -7,7 +7,7 @@ import json
 from .config import ARTIFACTS, ensure_artifact_dirs
 
 ARTIFACT_CONTRACT = {
-    "raw_data": "data/raw/RT_IOT2022",
+    "raw_data": "data/raw/Steel_industry_data.csv",
     "processed_data": "data/processed/analysis_results.csv",
     "model": "models/final_model.joblib",
     "metrics": "metadata/final_metrics.json",

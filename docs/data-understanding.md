@@ -2,31 +2,33 @@
 
 ## Unit of analysis
 
-The expected unit is a network communication flow. The grain, keys, and presence of
-repeated records must be confirmed in `01_EDA.ipynb`.
+One row represents a 15-minute industrial energy observation. There are 35,040 rows,
+which is consistent with 365 days times 96 intervals per day.
 
-## Feature groups
+## Variable groups
 
-| Group | Examples |
-| --- | --- |
-| Identification | record index, source port, and destination port |
-| Context | protocol and service |
-| Volume | forwarded and received packets and bytes |
-| Rate | packets and payload per second |
-| Control | FIN, SYN, RST, ACK, PSH, URG, CWR, and ECE flags |
-| Temporal | duration, IAT, and active and idle periods |
-| Windows | initial and final window sizes |
-| External reference | `Attack_type` |
+| Group | Variables | Role |
+| --- | --- | --- |
+| Time | date, NSM | timestamp and seconds from midnight |
+| Energy | Usage_kWh | active energy consumption |
+| Reactive energy | lagging and leading kVarh | electrical behavior |
+| Emissions | CO2(tCO2) | reported CO2 measure |
+| Power quality | lagging and leading power factor | electrical efficiency/context |
+| Calendar | WeekStatus, Day_of_week | operating context |
+| External regime reference | Load_Type | cardinality and later evaluation only |
 
-## Points that still require verification
+## Confirmed quality checks
 
-- data types inferred by pandas;
-- missing or infinite values;
-- constant or nearly constant columns;
-- duplicate records;
-- skewness and substantially different scales;
-- categorical feature cardinality;
-- traffic-type distribution;
-- possible information leakage.
+- 35,040 rows and 11 columns;
+- no missing values in the local CSV;
+- no exact duplicate rows;
+- 96 observations per complete day;
+- three Load_Type categories;
+- numerical variables have substantially different scales and asymmetric distributions.
 
-No quantitative conclusion is recorded here before the reviewed EDA is executed.
+## Important cautions
+
+The UCI metadata and the CO2 column name use potentially inconsistent unit wording; the
+data dictionary preserves the official metadata and this issue must be resolved before
+final reporting. Date parsing uses day-first format. Load_Type is excluded from feature
+relationships and model fitting.

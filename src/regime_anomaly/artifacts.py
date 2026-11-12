@@ -19,7 +19,7 @@ class ArtifactStore:
         path = self.root / relative
         if not path.exists():
             raise FileNotFoundError(
-                f"Artefato ausente: {path}. Publique-o pelo notebook 05."
+                f"Artefato ausente: {path}. Publique-o pelos notebooks ou pipeline."
             )
         return path
 
