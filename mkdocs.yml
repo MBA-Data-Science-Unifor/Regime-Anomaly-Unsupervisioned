@@ -21,16 +21,53 @@ nav:
       - Implementation: implementation.md
       - Project Structure: project-analysis.md
       - Status: status.md
+      - Technical References: references.md
   - PBL Journey:
       - Problem Canvas: pbl/problem-canvas.md
       - PBL Board: pbl/pbl-board.md
 
 plugins:
   - search
+  - i18n:
+      docs_structure: suffix
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: pt
+          name: Português
+          build: true
+          site_name: Regimes e Anomalias de Energia Siderúrgica
+          site_description: Análise não supervisionada de regimes operacionais e observações incomuns de consumo energético em uma indústria siderúrgica.
+          theme:
+            language: pt-BR
+          nav_translations:
+            Overview: Visão geral
+            Problem Understanding: Entendimento do problema
+            Methodology: Metodologia
+            Success Criteria: Critérios de sucesso
+            Data: Dados
+            Source: Fonte
+            Understanding: Entendimento
+            Initial Findings: Descobertas iniciais
+            Preparation: Preparação
+            Analysis: Análise
+            Exploratory Analysis: Análise exploratória
+            Modeling: Modelagem
+            Evaluation: Avaliação
+            Delivery: Entrega
+            Implementation: Implementação
+            Project Structure: Estrutura do projeto
+            Status: Situação
+            Technical References: Referências técnicas
+            PBL Journey: Jornada PBL
+            Problem Canvas: Canvas do problema
+            PBL Board: Quadro PBL
 
 theme:
   name: material
-  language: pt-BR
+  language: en
   custom_dir: docs/overrides
   icon:
     repo: fontawesome/brands/github
