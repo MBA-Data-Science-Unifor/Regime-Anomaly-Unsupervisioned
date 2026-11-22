@@ -27,3 +27,12 @@ The implemented EDA is recorded in artifacts/notebooks/01_EDA.ipynb.
 The notebook writes a data dictionary, CSV summaries, and 20 PNG figures under
 artifacts. These outputs are intentionally ignored by Git and must be regenerated
 locally. Stable quantitative impressions are summarized in [Initial Findings](initial-findings.md).
+
+The documentation publishes compact, reproducible versions of the correlation,
+month-hour consumption, and K-Means diagnostic figures. They can be regenerated with:
+
+    python scripts/generate_docs_figures.py
+
+Each figure is accompanied by an interpretation boundary in
+[Initial Findings](initial-findings.md); the images are evidence, not standalone proof of
+causality or business validity.

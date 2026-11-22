@@ -13,7 +13,7 @@ or as a training label.
 | EDA | implemented and documented |
 | Data dictionary | generated locally |
 | Exploratory figures and tables | generated locally; excluded from Git |
-| Preparation notebook | planned |
+| Preparation notebook | implemented; selection under review |
 | Final model comparison | pending |
 | Frozen evaluation | pending |
 | Streamlit | read-only scaffold available |
@@ -32,3 +32,4 @@ selection or business validation.
 7. move approved decisions to preparation, modeling, and evaluation.
 
 See [Initial Findings](initial-findings.md) for the evidence currently available.
+See [Technical References](references.md) for the libraries, APIs, and official sources.
