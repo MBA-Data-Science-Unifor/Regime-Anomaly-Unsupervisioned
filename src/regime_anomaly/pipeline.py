@@ -14,6 +14,8 @@ ARTIFACT_CONTRACT = {
     "manifest": "metadata/manifest.json",
     "tables": "tables/*.csv",
     "images": "images/*.png",
+    "preprocessor_data": "metadata/preprocessed_data.json",
+    "preprocessor": "models/preprocessor.joblib"
 }
 
 
