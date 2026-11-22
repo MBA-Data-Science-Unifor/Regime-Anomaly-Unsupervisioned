@@ -6,13 +6,12 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from regime_anomaly.artifacts import ArtifactStore
-from regime_anomaly.config import ARTIFACTS
-from regime_anomaly.data import snake_case
-from regime_anomaly.i18n import (
+from regime_anomaly import (
+    ARTIFACTS,
     DEFAULT_LOCALE,
     LOCALE_LABELS,
     SUPPORTED_LOCALES,
+    ArtifactStore,
     translate,
 )
 
@@ -62,7 +61,6 @@ def test_model(locale: str) -> None:
     if uploaded is None:
         return
     frame = pd.read_csv(uploaded)
-    frame.columns = [snake_case(column) for column in frame.columns]
     try:
         prediction = store.model().predict(frame)
     except (ValueError, KeyError, TypeError, NotImplementedError) as error:
