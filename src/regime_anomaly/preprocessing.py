@@ -13,27 +13,28 @@ from regime_anomaly.config import RANDOM_STATE
 TIME_COLUMN = "date"
 
 FEATURE_NUMERIC = [
-    "usage_kwh",  # feature central
-    "lagging_current_reactive_power_kvarh",  # r=0.9 com usage_kwh
-    "leading_current_reactive_power_kvarh",  # r=-0.32 com usage_kwh
-    "lagging_current_power_factor",  # r=0.39 com usage_kwh
+    'usage_kwh', # feature central
+    'lagging_current_reactive_power_kvarh',  # r=0.9 com o 'Usage_kWh'
+    'leading_current_reactive_power_kvarh',  # r=-0.32 com o 'Usage_kWh'
+    'lagging_current_power_factor'           # r=0.39 com o 'Usage_kWh'
 ]
 FEATURE_HOUR = ["hour_sin", "hour_cos"]
 FEATURE_MONTH = ["month_sin", "month_cos"]
 FEATURE_CATEGORICAL = ["day_of_week"]
 
-# Mantidas só para validar/reportar clusters; fora do K-Means
-FEATURE_REPORTED = ["co2_tco2", "weekstatus"]
-
 # Substituídas pelas features cíclicas de hora e mês
 FEATURE_DELETED = ["date", "nsm"]
 
+FEATURE_REPORTED = [
+    "co2_tco2", # r=0.99 com o 'Usage_kWh' -> excluída no K-Means e mantida para validar e reportar os clusters
+    "weekstatus" # redundante com o Day_of_week
+]
 
 
 def time_feature_adapt(data: pd.DataFrame) -> pd.DataFrame:
     """
     Será realizado a adaptação das colunas relacionadas a tempo, 
-    de modo a alinhar melhor a distância entre os pontos
+    de modo a alinhar melhor a distância entre os pontos e evitar redundância
     (não será adpatado a data para dia da semana por 
     apresentar redundância com a coluna 'Day_of_Week')
     """
@@ -44,7 +45,8 @@ def time_feature_adapt(data: pd.DataFrame) -> pd.DataFrame:
     out["month_sin"] = np.sin(2 * np.pi * (out["date"].dt.month - 1) / 12)
     out["month_cos"] = np.cos(2 * np.pi * (out["date"].dt.month - 1) / 12)
 
-    return out.drop(columns=FEATURE_DELETED, erros="ignore")
+    return out.drop(columns=FEATURE_DELETED)
+
 
 
 def split_columns(cols: list[str]) -> tuple[list[str], list[str]]:
@@ -56,24 +58,25 @@ def split_columns(cols: list[str]) -> tuple[list[str], list[str]]:
 
 
 def build_preprocessor(
-        numeric_cols: list[str] | None = None,
-        categorical_cols: list[str] | None = None,
+        numeric: list[str] | None = None,
+        categorical: list[str] | None = None,
         pca_variance: float | None = 0.90
 ) -> Pipeline:
     """
     Construção do Pré-Processamento de dados, recebendo um dataFrame cru,
     adaptando a escala das colunas numéricas e adaptando as colunas categóricas
     """
-    column_preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", StandardScaler(), numeric_cols),
-            ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical_cols)
-        ]
+    numeric_cols = FEATURE_NUMERIC if numeric is None else numeric
+    transformers = [("num", StandardScaler(), numeric_cols)]
+
+    if categorical:
+            transformers.append(
+                ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical)
     )
 
     steps = [
         ("time", FunctionTransformer(time_feature_adapt, validate=False)),
-        ("prep", ColumnTransformer(column_preprocessor)),
+        ("prep", ColumnTransformer(transformers=transformers)),
     ]
 
     if pca_variance is not None:
@@ -89,9 +92,7 @@ def describe_preprocessor(pipeline: Pipeline):
     
     fitted = {name: list(cols) for name, _, cols in columns.transformers_ if name != "remainder"}
     
-    numeric = fitted.get("num", [])
-    categorical = fitted.get("cat", [])
-
+    numeric, categorical = fitted.get("num", []), fitted.get("cat", [])
     derived = set(FEATURE_HOUR + FEATURE_MONTH)
     required = [TIME_COLUMN] + [c for c in numeric + categorical if c not in derived]
 

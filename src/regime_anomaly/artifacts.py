@@ -26,10 +26,10 @@ class ArtifactStore:
     def metrics(self) -> dict[str, object]:
         return json.loads(self._required("metadata/final_metrics.json").read_text(encoding="utf-8"))
 
-    def build_preprocessor(self):
+    def load_preprocessor(self):
         return joblib.load(self._required("models/preprocessor.joblib"))
 
-    def describe_preprocessor(self):
+    def describe_metadata(self):
         return json.loads(self._required("metadata/preprocessed_data.json").read_text(encoding="utf-8"))
 
     
