@@ -5,11 +5,13 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
-
-from .config import RAW_DIR
+import re
+from .config import RAW_DIR, MODELS_DIR
+import joblib
 
 DEFAULT_DATASET = RAW_DIR / "Steel_industry_data.csv"
 LABEL_COLUMN = "Load_Type"
+DEFAULT_PREPROCESSOR = MODELS_DIR / "preprocessor.joblib"
 
 
 def load_data(path: str | Path | None = None) -> pd.DataFrame:
@@ -18,3 +20,17 @@ def load_data(path: str | Path | None = None) -> pd.DataFrame:
     if not source.exists():
         raise FileNotFoundError(f"Base local não encontrada: {source}")
     return pd.read_csv(source, low_memory=False)
+
+
+def load_preprocessor(path_file: Path = Path(DEFAULT_PREPROCESSOR)):
+    if not path_file.exists():
+        raise FileNotFoundError(
+            f"Base local não encontrada: {path_file}"
+        )
+
+    preprocessor = joblib.load(path_file)
+    return preprocessor
+
+def snake_case(value: str) -> str:
+    value = re.sub(r"[^0-9A-Za-z]+", "_", value.strip())
+    return value.strip("_").lower()
