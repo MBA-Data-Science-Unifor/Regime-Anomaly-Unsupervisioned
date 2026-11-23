@@ -23,6 +23,8 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 - o dicionário de dados, tabelas e imagens são gerados localmente em `artifacts/`;
 - K-Means e GMM são explorados com três grupos, sem usar os valores de `Load_Type`;
 - Isolation Forest é usado apenas como diagnóstico exploratório de anomalias;
+- a base do dashboard Streamlit foi criada para consumir resultados publicados e
+  apresentar monitoramento, alertas, qualidade dos modelos e relatórios;
 - preparação, comparação final, avaliação congelada e modelo de produção ainda estão pendentes.
 
 Resultados atuais são impressões exploratórias, não conclusões finais.
@@ -51,6 +53,17 @@ Ao executar o EDA, são produzidos localmente:
 - tabelas exploratórias em `artifacts/tables/`;
 - gráficos PNG em `artifacts/images/`.
 
+O dashboard de monitoramento passará a consumir, quando publicados pelo pipeline:
+
+- `artifacts/data/processed/analysis_results.csv`, com a série temporal enriquecida;
+- `artifacts/metadata/final_metrics.json`, com métricas congeladas;
+- modelos e pré-processador serializados em `artifacts/models/`.
+
+O arquivo de resultados deverá conter, no mínimo, `timestamp` e as medições
+operacionais. Conforme os modelos forem consolidados, poderá incluir regime de carga
+supervisionado, perfil operacional não supervisionado, `anomaly_score`, estado e
+motivo do alerta.
+
 ## Ambiente e execução
 
 Requer Python 3.12 ou superior e [uv](https://docs.astral.sh/uv/).
@@ -62,8 +75,15 @@ uv run --group docs invoke docs --build --strict
 uv run --group test pytest
 ```
 
-A aplicação Streamlit deve apenas consumir artefatos aprovados; treinamento não faz
-parte do processo web.
+A aplicação Streamlit apenas consome artefatos aprovados; treinamento não faz parte
+do processo web. Ela reproduz resultados históricos publicados como uma simulação de
+monitoramento, com atualização manual após novas publicações do pipeline. Alertas
+indicam comportamento atípico para investigação operacional: não são diagnósticos de
+falha, previsões de manutenção ou ordens de serviço.
+
+Quando houver classificação supervisionada de `Load_Type`, ela será apresentada como
+comparação de regimes conhecidos e não substituirá a segmentação e a detecção de
+anomalias não supervisionadas.
 
 ## Documentação
 
