@@ -1,4 +1,8 @@
-""" Streamlit Pre-Processing adaptation """
+"""Reusable preprocessing utilities for notebooks and the application."""
+
+from __future__ import annotations
+
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -7,108 +11,110 @@ from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
-from regime_anomaly.config import RANDOM_STATE
-
+from .config import RANDOM_STATE
 
 TIME_COLUMN = "date"
 
 FEATURE_NUMERIC = [
-    'usage_kwh', # feature central
-    'lagging_current_reactive_power_kvarh',  # r=0.9 com o 'Usage_kWh'
-    'leading_current_reactive_power_kvarh',  # r=-0.32 com o 'Usage_kWh'
-    'lagging_current_power_factor'           # r=0.39 com o 'Usage_kWh'
+    "Usage_kWh",
+    "Lagging_Current_Reactive.Power_kVarh",
+    "Leading_Current_Reactive_Power_kVarh",
+    "Lagging_Current_Power_Factor",
 ]
 FEATURE_HOUR = ["hour_sin", "hour_cos"]
 FEATURE_MONTH = ["month_sin", "month_cos"]
-FEATURE_CATEGORICAL = ["day_of_week"]
+FEATURE_CATEGORICAL = ["Day_of_week"]
 
-# Substituídas pelas features cíclicas de hora e mês
-FEATURE_DELETED = ["date", "nsm"]
+# Used only to validate/report clusters; excluded from K-Means.
+FEATURE_REPORTED = ["CO2(tCO2)", "WeekStatus"]
 
-FEATURE_REPORTED = [
-    "co2_tco2", # r=0.99 com o 'Usage_kWh' -> excluída no K-Means e mantida para validar e reportar os clusters
-    "weekstatus" # redundante com o Day_of_week
-]
+# Replaced by cyclic hour and month features.
+FEATURE_DELETED = ["date", "NSM"]
 
 
 def time_feature_adapt(data: pd.DataFrame) -> pd.DataFrame:
-    """
-    Será realizado a adaptação das colunas relacionadas a tempo, 
-    de modo a alinhar melhor a distância entre os pontos e evitar redundância
-    (não será adpatado a data para dia da semana por 
-    apresentar redundância com a coluna 'Day_of_Week')
-    """
-    out = data.copy()
-    
-    out['hour_sin'] = np.sin(2 * np.pi * out["date"].dt.hour / 24)
-    out['hour_cos'] = np.cos(2 * np.pi * out["date"].dt.hour / 24)
-    out["month_sin"] = np.sin(2 * np.pi * (out["date"].dt.month - 1) / 12)
-    out["month_cos"] = np.cos(2 * np.pi * (out["date"].dt.month - 1) / 12)
-
-    return out.drop(columns=FEATURE_DELETED)
+    """Replace raw temporal columns with cyclic hour and month features."""
+    output = data.copy()
+    output["hour_sin"] = np.sin(2 * np.pi * output[TIME_COLUMN].dt.hour / 24)
+    output["hour_cos"] = np.cos(2 * np.pi * output[TIME_COLUMN].dt.hour / 24)
+    output["month_sin"] = np.sin(
+        2 * np.pi * (output[TIME_COLUMN].dt.month - 1) / 12
+    )
+    output["month_cos"] = np.cos(
+        2 * np.pi * (output[TIME_COLUMN].dt.month - 1) / 12
+    )
+    return output.drop(columns=FEATURE_DELETED, errors="ignore")
 
 
-
-def split_columns(cols: list[str]) -> tuple[list[str], list[str]]:
-    """ Separa uma lista de colunas em (numéricas, categóricas). """
-    categorical = [c for c in cols if c in FEATURE_CATEGORICAL]
-    numeric = [c for c in cols if c not in FEATURE_CATEGORICAL]
+def split_columns(columns: list[str]) -> tuple[list[str], list[str]]:
+    """Split a column list into numeric and categorical columns."""
+    categorical = [column for column in columns if column in FEATURE_CATEGORICAL]
+    numeric = [column for column in columns if column not in FEATURE_CATEGORICAL]
     return numeric, categorical
 
 
-
 def build_preprocessor(
-        numeric: list[str] | None = None,
-        categorical: list[str] | None = None,
-        pca_variance: float | None = 0.90
+    numeric_cols: list[str] | None = None,
+    categorical_cols: list[str] | None = None,
+    pca_variance: float | None = 0.90,
 ) -> Pipeline:
-    """
-    Construção do Pré-Processamento de dados, recebendo um dataFrame cru,
-    adaptando a escala das colunas numéricas e adaptando as colunas categóricas
-    """
-    numeric_cols = FEATURE_NUMERIC if numeric is None else numeric
-    transformers = [("num", StandardScaler(), numeric_cols)]
-
-    if categorical:
-            transformers.append(
-                ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical)
+    """Build the preprocessing pipeline used by the analysis notebooks."""
+    numeric_cols = numeric_cols or []
+    categorical_cols = categorical_cols or []
+    column_preprocessor = ColumnTransformer(
+        transformers=[
+            ("num", StandardScaler(), numeric_cols),
+            (
+                "cat",
+                OneHotEncoder(handle_unknown="ignore", sparse_output=False),
+                categorical_cols,
+            ),
+        ]
     )
 
-    steps = [
+    steps: list[tuple[str, Any]] = [
         ("time", FunctionTransformer(time_feature_adapt, validate=False)),
-        ("prep", ColumnTransformer(transformers=transformers)),
+        ("prep", column_preprocessor),
     ]
-
     if pca_variance is not None:
         steps.append(("pca", PCA(n_components=pca_variance, random_state=RANDOM_STATE)))
-
     return Pipeline(steps=steps)
 
 
-def describe_preprocessor(pipeline: Pipeline):
-    """Resumo JSON do pipeline fornecido"""
-    columns = pipeline.named_steps["prep"]
-    pca = pipeline.named_steps["pca"]
-    
-    fitted = {name: list(cols) for name, _, cols in columns.transformers_ if name != "remainder"}
-    
-    numeric, categorical = fitted.get("num", []), fitted.get("cat", [])
+def describe_preprocessor(pipeline: Pipeline) -> dict[str, object]:
+    """Return serializable metadata for a fitted preprocessing pipeline."""
+    columns: ColumnTransformer = pipeline.named_steps["prep"]
+    fitted = {
+        name: list(selected_columns)
+        for name, _, selected_columns in columns.transformers_
+        if name != "remainder"
+    }
+    numeric = fitted.get("num", [])
+    categorical = fitted.get("cat", [])
     derived = set(FEATURE_HOUR + FEATURE_MONTH)
-    required = [TIME_COLUMN] + [c for c in numeric + categorical if c not in derived]
+    required = [TIME_COLUMN] + [
+        column for column in numeric + categorical if column not in derived
+    ]
 
-    ratio = [float(v) for v in pca.explained_variance_ratio_]
+    pca: PCA | None = pipeline.named_steps.get("pca")
+    ratio = (
+        [float(value) for value in pca.explained_variance_ratio_]
+        if pca is not None
+        else []
+    )
+    categorical_transformer = columns.named_transformers_["cat"]
     return {
         "feature_numeric": numeric,
         "feature_categorical": categorical,
         "feature_reporting_only": FEATURE_REPORTED,
         "feature_deleted": FEATURE_DELETED,
         "one_hot_features": (
-            list(columns.named_transformers_["cat"].get_feature_names_out(categorical))
-            if categorical else []
+            list(categorical_transformer.get_feature_names_out(categorical))
+            if categorical
+            else []
         ),
-        
         "required_columns": required,
-        "pca_components": [f"PC{i + 1}" for i in range(len(ratio))],
+        "pca_components": [f"PC{index + 1}" for index in range(len(ratio))],
         "explained_variance_ratio": ratio,
-        "cumulative_variance": [float(v) for v in np.cumsum(ratio)],
+        "cumulative_variance": [float(value) for value in np.cumsum(ratio)],
     }

@@ -1,9 +1,10 @@
 # Data Preparation
 
-Preparation will be implemented in artifacts/notebooks/02_preprocessing.ipynb and then
-extracted into reusable functions.
+Preparation is implemented experimentally in `artifacts/notebooks/02_preprocessing.ipynb`.
+Reusable operations are exposed by `src/regime_anomaly/preprocessing.py`; the final
+feature selection is still under review.
 
-## Planned pipeline
+## Implemented pipeline
 
 1. parse date with day-first semantics;
 2. preserve a raw immutable copy;
@@ -13,6 +14,10 @@ extracted into reusable functions.
 6. one-hot encode WeekStatus and Day_of_week;
 7. fit every transformation on the appropriate training period only;
 8. serialize preprocessing with the selected model.
+
+The score comparison used during this experimental selection is published in
+[Initial Findings](initial-findings.md) and can be regenerated from the stored notebook
+output with `python scripts/generate_docs_figures.py`.
 
 ## Leakage boundary
 

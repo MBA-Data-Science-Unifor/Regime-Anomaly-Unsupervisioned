@@ -1,4 +1,4 @@
-from regime_anomaly.i18n import (
+from regime_anomaly import (
     DEFAULT_LOCALE,
     SUPPORTED_LOCALES,
     translate,

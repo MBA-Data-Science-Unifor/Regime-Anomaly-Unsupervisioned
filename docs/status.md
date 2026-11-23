@@ -9,7 +9,7 @@
 | Exploratory tables | 5 generated locally |
 | Three-regime K-Means/GMM | exploratory baselines complete |
 | Isolation Forest | exploratory baseline complete |
-| Preparation notebook | pending implementation |
+| Preparation notebook | implemented; configuration under review |
 | Final model protocol | pending |
 | Frozen evaluation | pending |
 | Streamlit | scaffold available |
