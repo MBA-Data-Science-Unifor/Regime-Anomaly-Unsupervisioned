@@ -5,14 +5,14 @@
 | Conjunto bruto da indústria siderúrgica | disponível localmente |
 | Notebook de EDA | implementado; revisão em andamento |
 | Dicionário de dados | gerado localmente |
-| Figuras exploratórias | 20 geradas localmente |
+| Figuras exploratórias | 21 geradas localmente, incluindo rastreamento pós-hoc de anomalias |
 | Tabelas exploratórias | 5 geradas localmente |
 | K-Means/GMM com três regimes | baselines exploratórios concluídos |
-| Isolation Forest | baseline exploratório concluído |
+| Isolation Forest | baseline global concluído; comparação contextual pendente |
 | Notebook de preparação | implementado; configuração em revisão |
 | Protocolo do modelo final | pendente |
 | Avaliação congelada | pendente |
-| Streamlit | estrutura disponível |
+| Streamlit | dashboard de monitoramento, alertas e relatórios disponível |
 | MkDocs | atualizado para o conjunto de dados e a metodologia atuais |
 
 ## Próximos passos

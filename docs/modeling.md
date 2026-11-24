@@ -14,6 +14,19 @@ categories without using their identities during fitting.
 - three-component diagonal-covariance GMM for probabilistic overlap;
 - Isolation Forest for global anomaly scoring.
 
+## Next anomaly comparison
+
+The current Isolation Forest is a global baseline with an exploratory 2% contamination.
+Post-hoc tracking by `Load_Type` found uneven signal concentration; this is not an error
+metric because load is not a failure label. The next comparison should test a contextual
+version: unsupervised profiles, hour, and day type define context, while consumption and
+electrical-variable deviations within that context receive the anomaly score. Thresholds
+and alert persistence must be frozen outside the data used for reporting.
+
+A future supervised `Load_Type` classifier has a separate purpose: predict the known
+regime and be evaluated with a temporal split, macro-F1, and balanced accuracy. It does
+not turn `Load_Type` into a failure label or validate anomaly detection.
+
 ## Deferred candidates
 
 DBSCAN/HDBSCAN, hierarchical clustering, K-Medoids, spectral clustering, SOM, UMAP,

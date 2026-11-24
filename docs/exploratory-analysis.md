@@ -10,7 +10,7 @@ The implemented EDA is recorded in artifacts/notebooks/01_EDA.ipynb.
 4. PCA and t-SNE projections;
 5. skewness, IQR, Spearman, and day-hour diagnostics;
 6. three-regime K-Means and GMM baselines;
-7. exploratory Isolation Forest signals;
+7. exploratory Isolation Forest signals and their post-hoc `Load_Type` tracking;
 8. rationale for selected and deferred techniques.
 
 ## Interpretation rules
@@ -20,16 +20,18 @@ The implemented EDA is recorded in artifacts/notebooks/01_EDA.ipynb.
 - elbow, silhouette, AIC, and BIC are diagnostics, not automatic selectors;
 - IQR extremes are not equivalent to anomalies;
 - Isolation Forest signals are not confirmed incidents;
-- no supervised estimator or label-based metric belongs in the EDA.
+- `Load_Type` may be cross-tabulated only after fitting to describe signal concentration;
+  it neither fits nor validates the detector.
 
 ## Generated outputs
 
-The notebook writes a data dictionary, CSV summaries, and 20 PNG figures under
+The notebook writes a data dictionary, CSV summaries, and 21 PNG figures under
 artifacts. These outputs are intentionally ignored by Git and must be regenerated
 locally. Stable quantitative impressions are summarized in [Initial Findings](initial-findings.md).
 
 The documentation publishes compact, reproducible versions of the correlation,
-month-hour consumption, and K-Means diagnostic figures. They can be regenerated with:
+month-hour consumption, K-Means diagnostic, and post-hoc signal-tracking figures. They
+can be regenerated with:
 
     python scripts/generate_docs_figures.py
 

@@ -5,14 +5,14 @@
 | Steel Industry raw dataset | available locally |
 | EDA notebook | implemented; review in progress |
 | Data dictionary | generated locally |
-| Exploratory figures | 20 generated locally |
+| Exploratory figures | 21 generated locally, including post-hoc anomaly tracking |
 | Exploratory tables | 5 generated locally |
 | Three-regime K-Means/GMM | exploratory baselines complete |
-| Isolation Forest | exploratory baseline complete |
+| Isolation Forest | global exploratory baseline complete; contextual comparison pending |
 | Preparation notebook | implemented; configuration under review |
 | Final model protocol | pending |
 | Frozen evaluation | pending |
-| Streamlit | scaffold available |
+| Streamlit | monitoring, alert, and reporting dashboard available |
 | MkDocs | updated to current dataset and methodology |
 
 ## Next steps

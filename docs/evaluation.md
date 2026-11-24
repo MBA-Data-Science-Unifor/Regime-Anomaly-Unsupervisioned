@@ -18,6 +18,8 @@ regime geometry, stability, anomaly ranking, and optional external agreement.
 - Isolation Forest score distribution and sensitivity to contamination;
 - stability of the top-ranked anomaly set;
 - review by time window and operating context.
+- signal distribution by unsupervised profile, hour, and day type;
+- comparison between the global baseline and a contextual detector, including alert persistence.
 
 ## External evaluation, later only
 
@@ -27,6 +29,10 @@ metrics and must not influence the unsupervised fit.
 
 If a later supervised task is approved, it requires a separate objective, split,
 baseline, and metrics. Accuracy alone is insufficient for imbalanced categories.
+
+`Load_Type` may also be used in a post-hoc table to describe which load regimes occur
+among signals. That table is not an anomaly metric: it must not calibrate the threshold,
+equalize class rates, or turn an alert into a confirmed failure.
 
 ## Guardrails
 

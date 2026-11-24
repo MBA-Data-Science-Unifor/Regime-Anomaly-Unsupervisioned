@@ -70,6 +70,19 @@ problem has eight regimes.
 Isolation Forest flags 701 observations under an assumed contamination rate of 2%.
 Those records are investigation candidates, not confirmed faults.
 
+The post-hoc cross-tabulation with `Load_Type` shows an uneven concentration of signals:
+0.88% in `Light_Load`, 3.52% in `Medium_Load`, and 2.76% in `Maximum_Load`. Since
+`Load_Type` describes load rather than failure, this difference is neither accuracy nor
+detector error. It indicates that a global score can conflate distinct operating contexts
+and motivates a future comparison with contextual detection by unsupervised profile, hour,
+and day type.
+
+![Isolation Forest signal rate by reference regime](assets/images/isolation-forest-target-tracking.png)
+
+*Figure 5 — Post-hoc distribution of signals by `Load_Type`, which remains outside
+training. The dashed line is the configured overall rate of approximately 2%; the chart
+describes alert concentration, not confirmed failure incidence.*
+
 ## Next checks
 
 - reproduce preparation outside the EDA notebook;

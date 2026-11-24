@@ -19,6 +19,8 @@ opcional.
 - distribuição dos escores do Isolation Forest e sensibilidade à contaminação;
 - estabilidade do conjunto de anomalias mais bem classificadas;
 - revisão por janela temporal e contexto operacional.
+- distribuição dos sinais por perfil não supervisionado, hora e tipo de dia;
+- comparação entre baseline global e detector contextual, incluindo persistência dos alertas.
 
 ## Avaliação externa, somente depois
 
@@ -30,6 +32,10 @@ supervisionado.
 Se uma tarefa supervisionada for aprovada futuramente, ela exigirá objetivo, divisão,
 baseline e métricas próprios. Acurácia isolada é insuficiente para categorias
 desbalanceadas.
+
+`Load_Type` também pode ser usado em uma tabela pós-hoc para descrever quais regimes de
+carga aparecem entre os sinais. Essa tabela não é métrica de anomalia: não deve calibrar
+o limiar, equalizar taxas entre classes nem transformar um alerta em falha confirmada.
 
 ## Salvaguardas
 
