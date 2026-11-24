@@ -16,17 +16,20 @@ from .config import RANDOM_STATE
 TIME_COLUMN = "date"
 
 FEATURE_NUMERIC = [
-    "Usage_kWh",
-    "Lagging_Current_Reactive.Power_kVarh",
-    "Leading_Current_Reactive_Power_kVarh",
-    "Lagging_Current_Power_Factor",
+    'Usage_kWh', # feature central
+    'Lagging_Current_Reactive.Power_kVarh',  # r=0.9 com o 'Usage_kWh'
+    'Leading_Current_Reactive_Power_kVarh',  # r=-0.32 com o 'Usage_kWh'
+    'Lagging_Current_Power_Factor'           # r=0.39 com o 'Usage_kWh'
 ]
 FEATURE_HOUR = ["hour_sin", "hour_cos"]
 FEATURE_MONTH = ["month_sin", "month_cos"]
 FEATURE_CATEGORICAL = ["Day_of_week"]
 
 # Used only to validate/report clusters; excluded from K-Means.
-FEATURE_REPORTED = ["CO2(tCO2)", "WeekStatus"]
+FEATURE_REPORTED = [
+    "CO2(tCO2)", # r=0.99 com o 'Usage_kWh' -> excluída no K-Means e mantida para validar e reportar os clusters
+    "WeekStatus" # redundante com o Day_of_week
+]
 
 # Replaced by cyclic hour and month features.
 FEATURE_DELETED = ["date", "NSM"]
@@ -59,8 +62,10 @@ def build_preprocessor(
     pca_variance: float | None = 0.90,
 ) -> Pipeline:
     """Build the preprocessing pipeline used by the analysis notebooks."""
+
     numeric_cols = numeric_cols or []
     categorical_cols = categorical_cols or []
+
     column_preprocessor = ColumnTransformer(
         transformers=[
             ("num", StandardScaler(), numeric_cols),
@@ -76,8 +81,10 @@ def build_preprocessor(
         ("time", FunctionTransformer(time_feature_adapt, validate=False)),
         ("prep", column_preprocessor),
     ]
+
     if pca_variance is not None:
         steps.append(("pca", PCA(n_components=pca_variance, random_state=RANDOM_STATE)))
+
     return Pipeline(steps=steps)
 
 
