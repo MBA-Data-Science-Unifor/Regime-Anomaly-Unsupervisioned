@@ -2,11 +2,32 @@
 
 from invoke import task
 
+NOTEBOOKS = (
+    "01_EDA",
+    "02_preprocessing",
+    "03_Modeling",
+    "04_Review",
+    "05_Transition_Filter",
+)
+
 
 @task
 def pipeline(context):
-    """Create and display the artifact structure without running analysis."""
+    """Check published artifacts against the manifest without running analysis."""
     context.run("python -m regime_anomaly.pipeline", echo=True)
+
+
+@task(help={"start": "First notebook to run, e.g. 03_Modeling (earlier ones are skipped)."})
+def notebooks(context, start=NOTEBOOKS[0]):
+    """Execute the analysis notebooks in order, in place, regenerating every artifact."""
+    if start not in NOTEBOOKS:
+        raise ValueError(f"Unknown notebook {start!r}; choose one of {', '.join(NOTEBOOKS)}")
+    for name in NOTEBOOKS[NOTEBOOKS.index(start) :]:
+        context.run(
+            "jupyter nbconvert --to notebook --execute --inplace "
+            f"--ExecutePreprocessor.timeout=1800 artifacts/notebooks/{name}.ipynb",
+            echo=True,
+        )
 
 
 @task

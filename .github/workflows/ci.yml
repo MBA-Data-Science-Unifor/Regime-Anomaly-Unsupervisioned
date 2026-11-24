@@ -101,7 +101,9 @@ jobs:
 
       - name: Check formatting and lint
         if: steps.changes.outputs.run_quality == 'true'
-        run: uv run ruff check src tests tasks.py
+        run: |
+          uv run ruff format --check src tests tasks.py
+          uv run ruff check src tests tasks.py
 
       - name: Check types
         if: steps.changes.outputs.run_quality == 'true'

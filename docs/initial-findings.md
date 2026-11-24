@@ -53,6 +53,9 @@ Those records are investigation candidates, not confirmed faults.
 
 ## Next checks
 
+These checks were addressed in [Data Preparation](data-preparation.md),
+[Modeling](modeling.md) and [Evaluation](evaluation.md).
+
 - reproduce preparation outside the EDA notebook;
 - measure cluster stability under resampling and time splits;
 - test sensitivity to feature groups and transformations;

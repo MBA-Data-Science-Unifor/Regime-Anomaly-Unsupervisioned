@@ -17,6 +17,7 @@ nav:
       - Exploratory Analysis: exploratory-analysis.md
       - Modeling: modeling.md
       - Evaluation: evaluation.md
+      - Team Review: team-review.md
   - Delivery:
       - Implementation: implementation.md
       - Project Structure: project-analysis.md

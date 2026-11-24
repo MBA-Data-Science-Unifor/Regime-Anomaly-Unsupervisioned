@@ -26,7 +26,8 @@
 ## Delivery
 
 - keep generated or heavy artifacts outside Git;
-- reproduce artifacts from notebooks or the future pipeline;
+- reproduce artifacts from the notebooks (`uv run invoke notebooks`) and check them with
+  `uv run regime-analysis`;
 - build MkDocs in strict mode;
 - keep Streamlit read-only with respect to training;
 - maintain passing tests and an integrity manifest before final publication.

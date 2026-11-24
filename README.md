@@ -19,13 +19,16 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 
 ## Estado atual
 
-- o EDA foi estruturado e documentado em `artifacts/notebooks/01_EDA.ipynb`;
-- o dicionário de dados, tabelas e imagens são gerados localmente em `artifacts/`;
-- K-Means e GMM são explorados com três grupos, sem usar os valores de `Load_Type`;
-- Isolation Forest é usado apenas como diagnóstico exploratório de anomalias;
-- preparação, comparação final, avaliação congelada e modelo de produção ainda estão pendentes.
-
-Resultados atuais são impressões exploratórias, não conclusões finais.
+- EDA (`01_EDA.ipynb`), pré-processamento (`02_preprocessing.ipynb`) e modelagem
+  (`03_Modeling.ipynb`) implementados e executáveis em sequência;
+- modelo selecionado por protocolo fixado antes dos resultados: **K-Means com três
+  regimes** usando só variáveis elétricas — ocioso indutivo, ocioso capacitivo e produção;
+- **Isolation Forest** com limiar de 1% calibrado na validação; na v1.1, alertas em trocas de regime são suprimidos (49 → 5 alertas no teste);
+- avaliação final congelada em nov–dez; concordância com `Load_Type` é moderada
+  (ARI 0,34) porque `Load_Type` segue uma tabela tarifária por horário, não o estado
+  elétrico;
+- modelo, métricas, resultados e manifesto de integridade publicados em `artifacts/`;
+- decisões, nomes dos regimes e triagem dos alertas aguardam revisão da equipe; o material está em `04_Review.ipynb` e na página Team Review da documentação.
 
 ## Equipe
 
@@ -36,8 +39,10 @@ Resultados atuais são impressões exploratórias, não conclusões finais.
 ## Notebooks
 
 1. `01_EDA.ipynb`: qualidade, distribuições, relações, PCA, t-SNE e baselines não supervisionados;
-2. `02_preprocessing.ipynb`: preparação reproduzível, ainda em desenvolvimento;
-3. `03_Modeling.ipynb`: comparação e seleção final, ainda em desenvolvimento.
+2. `02_preprocessing.ipynb`: correção de timestamps, partição temporal, conjuntos de features e transformações;
+3. `03_Modeling.ipynb`: protocolo, comparação de candidatos, anomalias, congelamento, avaliação no teste e publicação.
+4. `04_Review.ipynb`: material para revisão da equipe — registro de decisões, evidências dos regimes e planilha de triagem dos alertas;
+5. `05_Transition_Filter.ipynb`: filtro de alertas em trocas de regime (modelo v1.1).
 
 ## Artefatos e versionamento
 
@@ -55,12 +60,21 @@ Ao executar o EDA, são produzidos localmente:
 
 Requer Python 3.12 ou superior e [uv](https://docs.astral.sh/uv/).
 
+Antes de executar, baixe `Steel_industry_data.csv` da
+[UCI](https://archive.ics.uci.edu/dataset/851/steel+industry+energy+consumption) para
+`artifacts/data/raw/`. O projeto nunca baixa o arquivo automaticamente.
+
 ```bash
-uv sync --locked
+uv sync --locked --group analysis --group docs --group test
+uv run invoke notebooks          # executa 01 a 05 em ordem e regenera os artefatos
+uv run regime-analysis           # confere os artefatos contra o manifesto (SHA-256)
 uv run streamlit run src/app.py
-uv run --group docs invoke docs --build --strict
-uv run --group test pytest
+uv run invoke docs --build --strict
+uv run pytest
 ```
+
+Para retomar a partir de um notebook: `uv run invoke notebooks --start 03_Modeling`.
+O `requirements.txt` é exportado do `uv.lock` (`uv export`) para quem usa `pip`.
 
 A aplicação Streamlit deve apenas consumir artefatos aprovados; treinamento não faz
 parte do processo web.

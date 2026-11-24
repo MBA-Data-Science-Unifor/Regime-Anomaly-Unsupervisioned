@@ -27,5 +27,8 @@ Each row is a 15-minute observation during 2018. The fields cover active energy 
 lagging and leading reactive energy, CO2, power factors, seconds from midnight,
 weekday/weekend context, day of week, and load type.
 
-A future manifest must record the acquisition date, byte size, SHA-256 hash, UCI
-identifier, DOI, and license.
+`artifacts/metadata/manifest.json` records the file's byte size, SHA-256 hash, UCI
+identifier, DOI, and license. The reference copy has 2,731,389 bytes and SHA-256
+`9b1cee6f9cb9cd9df2b95814ca90a9a2ff15b7f5f1fba0fae3c643e82072eacc`; `uv run
+regime-analysis` reports `alterado` if a local copy differs. The acquisition date is not
+recorded, because the file was not versioned when first downloaded.
