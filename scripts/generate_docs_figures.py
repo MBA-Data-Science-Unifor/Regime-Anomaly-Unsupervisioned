@@ -182,6 +182,39 @@ def preprocessing_figure() -> None:
     save(figure, "preprocessing-diagnostics.png")
 
 
+def anomaly_tracking_figure() -> None:
+    """Publish the post-hoc regime distribution of Isolation Forest signals."""
+    source = ROOT / "artifacts" / "tables" / "tracking_anomalias_por_load_type.csv"
+    if not source.exists():
+        raise FileNotFoundError(f"Anomaly tracking table required for documentation: {source}")
+    tracking = pd.read_csv(source)
+    order = ["Light_Load", "Medium_Load", "Maximum_Load"]
+    tracking["regime_referencia"] = pd.Categorical(
+        tracking["regime_referencia"], categories=order, ordered=True
+    )
+    tracking = tracking.sort_values("regime_referencia")
+    total_rate = tracking["Sinalizado"].sum() / tracking["total_registros"].sum()
+
+    figure, axis = plt.subplots(figsize=(9.6, 4.8))
+    sns.barplot(
+        data=tracking,
+        x="regime_referencia",
+        y="taxa_sinalizada",
+        color=PALETTE["red"],
+        ax=axis,
+    )
+    axis.axhline(total_rate, color="#333333", linestyle="--", label="Overall rate / Taxa total")
+    axis.set(
+        title="Isolation Forest signal rate by reference regime / Taxa por regime",
+        xlabel="Reference regime / Regime de referência",
+        ylabel="Flagged proportion / Proporção sinalizada",
+    )
+    axis.yaxis.set_major_formatter(plt.FuncFormatter(lambda value, _: f"{value:.1%}"))
+    axis.grid(axis="y", alpha=0.2)
+    axis.legend()
+    save(figure, "isolation-forest-target-tracking.png")
+
+
 def main() -> None:
     if not DATASET.exists():
         raise FileNotFoundError(f"Dataset required to generate documentation figures: {DATASET}")
@@ -191,6 +224,7 @@ def main() -> None:
     month_hour_figure(frame)
     kmeans_figure()
     preprocessing_figure()
+    anomaly_tracking_figure()
 
 
 if __name__ == "__main__":
