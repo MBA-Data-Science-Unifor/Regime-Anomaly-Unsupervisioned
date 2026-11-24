@@ -2,20 +2,19 @@
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
+import joblib
 import pandas as pd
 
-from .config import RAW_DIR
+from .config import ARTIFACTS, MODELS_DIR, RAW_DIR
 
 DEFAULT_DATASET = RAW_DIR / "Steel_industry_data.csv"
-LABEL_COLUMN = "load_type"
-
-
-def snake_case(value: str) -> str:
-    value = re.sub(r"[^0-9A-Za-z]+", "_", value.strip())
-    return value.strip("_").lower()
+LABEL_COLUMN = "Load_Type"
+DEFAULT_PREPROCESSOR = MODELS_DIR / "preprocessor.joblib"
+PREPROCESSING_PATH = ARTIFACTS / "metadata" / "preprocessed_data.json"
 
 
 def load_data(path: str | Path | None = None) -> pd.DataFrame:
@@ -23,8 +22,22 @@ def load_data(path: str | Path | None = None) -> pd.DataFrame:
     source = Path(path) if path else DEFAULT_DATASET
     if not source.exists():
         raise FileNotFoundError(f"Base local não encontrada: {source}")
-    frame = pd.read_csv(source, low_memory=False)
-    frame.columns = [snake_case(column) for column in frame.columns]
-    if frame.columns[0] == "unnamed_0":
-        frame = frame.rename(columns={"unnamed_0": "record_id"})
-    return frame
+    return pd.read_csv(source, low_memory=False)
+
+
+def load_preprocessor(path_file: Path = Path(DEFAULT_PREPROCESSOR)):
+    if not path_file.exists():
+        raise FileNotFoundError(f"Base local não encontrada: {path_file}")
+
+    return joblib.load(path_file)
+
+
+def load_preprocessing_data():
+    if not PREPROCESSING_PATH.exists():
+        return {}
+    return json.loads(PREPROCESSING_PATH.read_text(encoding="utf-8"))
+
+
+def snake_case(value: str) -> str:
+    value = re.sub(r"[^0-9A-Za-z]+", "_", value.strip())
+    return value.strip("_").lower()

@@ -13,11 +13,11 @@ or as a training label.
 | EDA | implemented and documented |
 | Data dictionary | generated locally |
 | Exploratory figures and tables | generated locally; excluded from Git |
-| Preparation notebook | implemented; decisions pending team approval |
+| Preparation notebooks | implemented (02 and 02b); decisions pending team approval |
 | Final model comparison | complete: K-Means, three regimes, electrical features only |
 | Frozen evaluation | complete on November–December |
 | Anomaly detector | Isolation Forest with transition filter (model v1.1) |
-| Streamlit | reads published results and runs the model on uploaded CSV files |
+| Streamlit | monitoring dashboard on published results; runs the model on uploaded CSV files |
 
 The model is selected and evaluated, but not yet validated by the business: regime
 names, the alert rate and the alerts themselves await plant and operations review (see
@@ -36,3 +36,4 @@ names, the alert rate and the alerts themselves await plant and operations revie
 
 See [Initial Findings](initial-findings.md) for the exploratory evidence,
 [Modeling](modeling.md) and [Evaluation](evaluation.md) for the final results.
+See [Technical References](references.md) for the libraries, APIs, and official sources.

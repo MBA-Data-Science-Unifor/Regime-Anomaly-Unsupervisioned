@@ -1,10 +1,16 @@
 # Data Preparation
 
-Preparation is implemented in `artifacts/notebooks/02_preprocessing.ipynb`, which records
-the evidence, and in `src/regime_anomaly/preprocessing.py`, which holds the reusable logic.
+Preparation lives in two notebooks that share `src/regime_anomaly/preprocessing.py`:
+
+- `artifacts/notebooks/02_preprocessing.ipynb` — exploratory comparison of feature
+  configurations (80/20 temporal split, one-hot `Day_of_week`, optional PCA);
+- `artifacts/notebooks/02b_Preprocessing_Protocol.ipynb` — the preparation used by the
+  published model (notebooks 03–05), described below.
 
 !!! warning "Proposed decisions"
-    The choices below are evidence-based proposals pending team approval.
+    The choices below are evidence-based proposals pending team approval. The two
+    notebooks reach the same conclusion on calendar inputs: electrical variables alone
+    give the highest silhouette (0.636 in notebook 02, 0.82 on validation in 02b).
 
 ## Pipeline
 
@@ -36,7 +42,7 @@ the evidence, and in `src/regime_anomaly/preprocessing.py`, which holds the reus
 
 - **Load_Type behaves like a time-of-use schedule.** From 00:00 to 08:59 it is always
   `Light_Load`, and a majority rule on time of day, week status, and month reproduces
-  about 92% of training labels. Calendar inputs would let clusters rebuild the tariff
+  about 92% of training labels (an in-sample fit over about 1,500 calendar slots). Calendar inputs would let clusters rebuild the tariff
   table, so the main regime set excludes them and uses calendar only to describe clusters.
 - **CO2 is excluded** from all feature sets: Pearson ≈ 0.99 with usage, only eight
   distinct values, 58% zeros. It stays available for profiling.
@@ -44,6 +50,10 @@ the evidence, and in `src/regime_anomaly/preprocessing.py`, which holds the reus
   erase that signal.
 - **Drift exists.** Median usage is about 23% lower in validation than in training, so
   validation also measures temporal robustness.
+
+The score comparison used during this experimental selection is published in
+[Initial Findings](initial-findings.md) and can be regenerated from the stored notebook
+output with `python scripts/generate_docs_figures.py`.
 
 ## Leakage boundary
 

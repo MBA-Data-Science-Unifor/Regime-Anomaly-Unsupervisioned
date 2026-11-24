@@ -13,7 +13,7 @@ Time convention: each reading covers 15 minutes. Times below are shown as interv
 | --- | --- | --- | --- |
 | D1 | Move the 24:00 reading to the next midnight | 365 backward jumps with a naive parse | no valid alternative; ordering and split break |
 | D2 | Chronological split Jan–Aug / Sep–Oct / Nov–Dec | adjacent readings are dependent | redo notebooks 02 and 03 |
-| D3 | Calendar **excluded** from regime features | calendar reproduces ~92% of Load_Type; with calendar, silhouette drops from 0.82 to 0.38 and GMMs become unstable | switch to `regime_with_calendar` (already measured) |
+| D3 | Calendar **excluded** from regime features | a calendar majority rule reproduces ~92% of training Load_Type (in-sample, ~1,500 slots; hour + week status + month alone: 87%); with calendar, GMMs become unstable (silhouette 0.82 → 0.38, but measured in 5 vs 10 dimensions, so not strictly comparable) | switch to `regime_with_calendar` (already measured) |
 | D4 | CO2 excluded | Pearson 0.99 with usage, eight distinct values | usage weighs double in distances |
 | D5 | `log1p` energy, `log1p(100 − PF)` power factor | usage skewness 1.14 → 0.43 | redo selection |
 | D6 | Extremes kept | anomalies are a project goal | detector loses the unusual cases |

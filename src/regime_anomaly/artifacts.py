@@ -21,7 +21,7 @@ MANIFEST_PATTERNS = (
 )
 REPRODUCTION_STEPS = [
     "uv sync --locked --group analysis --group docs",
-    "uv run invoke notebooks  # executa 01_EDA a 05_Transition_Filter em ordem",
+    "uv run invoke notebooks  # executa 01, 02, 02b, 03, 04 e 05 em ordem",
     "uv run regime-analysis  # confere os artefatos contra este manifesto",
 ]
 RAW_SOURCE = {
@@ -106,6 +106,14 @@ class ArtifactStore:
 
     def metrics(self) -> dict[str, object]:
         return json.loads(self._required("metadata/final_metrics.json").read_text(encoding="utf-8"))
+
+    def load_preprocessor(self):
+        return joblib.load(self._required("models/preprocessor.joblib"))
+
+    def describe_metadata(self):
+        return json.loads(
+            self._required("metadata/preprocessed_data.json").read_text(encoding="utf-8")
+        )
 
     def table(self, name: str) -> pd.DataFrame:
         return pd.read_csv(self._required(f"tables/{name}.csv"))

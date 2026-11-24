@@ -30,7 +30,10 @@ match between the notebook and inference lives in `src/regime_anomaly/modeling.p
 | regime_with_calendar | gmm_diag | 0.347 | 0.664 | 0.875 |
 | regime_with_calendar | gmm_full | 0.288 | 0.496 | 0.416 |
 
-Adding calendar inputs halves the silhouette and makes the GMMs unstable.
+Adding calendar inputs makes the GMMs unstable (bootstrap ARI 0.66 and 0.50). The
+silhouette also falls by half, but the two feature sets have 5 and 10 dimensions, so
+those silhouettes are not strictly comparable; the stability result carries the
+decision. Selecting by silhouette also tends to favour K-Means over GMM.
 
 ## Selected regimes
 

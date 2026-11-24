@@ -134,12 +134,16 @@ class ModelBundle:
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def _features(self, frame: pd.DataFrame) -> pd.DataFrame:
+        frame = pp.normalize_columns(frame)
         missing = [column for column in INPUT_COLUMNS if column not in frame.columns]
         if missing:
             raise ValueError(f"Colunas obrigatórias ausentes: {missing}")
         unknown = sorted(set(frame[pp.DAY_OF_WEEK]) - set(pp.DAY_ORDER))
         if unknown:
             raise ValueError(f"Dias da semana desconhecidos: {unknown}")
+        unknown_status = sorted(set(frame[pp.WEEK_STATUS]) - pp.WEEK_STATUS_VALUES)
+        if unknown_status:
+            raise ValueError(f"WeekStatus desconhecido: {unknown_status}")
         pp.assert_no_label(pp.feature_columns(self.regime_feature_set))
         return pp.add_calendar_features(frame)
 
@@ -151,7 +155,11 @@ class ModelBundle:
         return -self.anomaly_model.score_samples(transformed)
 
     def predict(self, frame: pd.DataFrame) -> pd.DataFrame:
-        """Assign a regime and an anomaly flag to each row of a snake_case frame."""
+        """Assign a regime and an anomaly flag to each row.
+
+        Accepts original UCI column names or snake_case; the result uses snake_case.
+        """
+        frame = pp.normalize_columns(frame)
         features = self._features(frame)
         regime_input = self.regime_preprocessor.transform(
             features[pp.feature_columns(self.regime_feature_set)]

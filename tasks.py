@@ -5,6 +5,7 @@ from invoke import task
 NOTEBOOKS = (
     "01_EDA",
     "02_preprocessing",
+    "02b_Preprocessing_Protocol",
     "03_Modeling",
     "04_Review",
     "05_Transition_Filter",

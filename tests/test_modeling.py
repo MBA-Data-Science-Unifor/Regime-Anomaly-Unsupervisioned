@@ -1,5 +1,7 @@
+import dataclasses
 import pickle
 
+import joblib
 import numpy as np
 import pandas as pd
 import pytest
@@ -7,13 +9,15 @@ from test_preprocessing import synthetic_raw
 
 from regime_anomaly import modeling as md
 from regime_anomaly import preprocessing as pp
+from regime_anomaly.config import ARTIFACTS
+from regime_anomaly.data import load_data
 
 
 @pytest.fixture(scope="module")
 def bundle_and_frame() -> tuple[md.ModelBundle, pd.DataFrame]:
     frame = pp.add_calendar_features(pp.parse_timestamps(synthetic_raw(days=4)))
-    regime_pre = pp.build_preprocessor("regime").fit(frame[pp.feature_columns("regime")])
-    anomaly_pre = pp.build_preprocessor("anomaly").fit(frame[pp.feature_columns("anomaly")])
+    regime_pre = pp.build_feature_preprocessor("regime").fit(frame[pp.feature_columns("regime")])
+    anomaly_pre = pp.build_feature_preprocessor("anomaly").fit(frame[pp.feature_columns("anomaly")])
     regime_input = regime_pre.transform(frame[pp.feature_columns("regime")])
     regime_model = md.make_regime_model("gmm_diag").fit(regime_input)
     anomaly_model = md.make_anomaly_model().fit(
@@ -65,6 +69,27 @@ def test_predict_ignores_label_values(
     pd.testing.assert_series_equal(
         bundle.predict(frame)["regime"], bundle.predict(altered)["regime"]
     )
+
+
+UCI_NAMES = {
+    "usage_kwh": "Usage_kWh",
+    "lagging_current_reactive_power_kvarh": "Lagging_Current_Reactive.Power_kVarh",
+    "leading_current_reactive_power_kvarh": "Leading_Current_Reactive_Power_kVarh",
+    "lagging_current_power_factor": "Lagging_Current_Power_Factor",
+    "leading_current_power_factor": "Leading_Current_Power_Factor",
+    "nsm": "NSM",
+    "weekstatus": "WeekStatus",
+    "day_of_week": "Day_of_week",
+}
+
+
+def test_predict_accepts_original_uci_names(
+    bundle_and_frame: tuple[md.ModelBundle, pd.DataFrame],
+) -> None:
+    bundle, frame = bundle_and_frame
+    original = frame.rename(columns=UCI_NAMES)
+    assert pp.normalize_columns(original).columns.tolist() == frame.columns.tolist()
+    pd.testing.assert_frame_equal(bundle.predict(original), bundle.predict(frame))
 
 
 def test_predict_rejects_missing_columns(
@@ -122,3 +147,36 @@ def test_bundles_pickled_without_filter_field_default_to_off(
     del legacy.__dict__["transition_filter"]
     assert legacy.transition_filter is False
     assert (legacy.predict(frame)["is_anomaly"] == legacy.predict(frame)["is_anomaly_raw"]).all()
+
+
+def test_kmeans_bundle_has_no_confidence_column(
+    bundle_and_frame: tuple[md.ModelBundle, pd.DataFrame],
+) -> None:
+    """The published model is K-Means, which has no ``predict_proba``."""
+    bundle, frame = bundle_and_frame
+    regime_input = bundle.regime_preprocessor.transform(frame[pp.feature_columns("regime")])
+    kmeans = md.make_regime_model("kmeans").fit(regime_input)
+    order = md.order_by_profile(kmeans.predict(regime_input), frame)
+    result = dataclasses.replace(bundle, regime_model=kmeans, regime_order=order).predict(frame)
+    assert "regime_confidence" not in result
+    assert set(result["regime_name"]) <= set(md.REGIME_NAMES)
+
+
+def test_predict_rejects_unknown_week_status(
+    bundle_and_frame: tuple[md.ModelBundle, pd.DataFrame],
+) -> None:
+    bundle, frame = bundle_and_frame
+    with pytest.raises(ValueError, match="WeekStatus"):
+        bundle.predict(frame.assign(weekstatus="weekend"))
+
+
+PUBLISHED_MODEL = ARTIFACTS / "models" / "final_model.joblib"
+
+
+@pytest.mark.skipif(not PUBLISHED_MODEL.exists(), reason="modelo publicado ausente")
+def test_published_model_scores_raw_uci_rows() -> None:
+    raw = load_data().head(200)
+    result = joblib.load(PUBLISHED_MODEL).predict(raw)
+    assert len(result) == len(raw)
+    assert set(result["regime_name"]) <= set(md.REGIME_NAMES)
+    assert {"anomaly_score", "is_anomaly_raw", "regime_boundary", "is_anomaly"} <= set(result)

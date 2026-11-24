@@ -19,8 +19,9 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 
 ## Estado atual
 
-- EDA (`01_EDA.ipynb`), pré-processamento (`02_preprocessing.ipynb`) e modelagem
-  (`03_Modeling.ipynb`) implementados e executáveis em sequência;
+- EDA (`01_EDA.ipynb`), pré-processamento (`02_preprocessing.ipynb` e
+  `02b_Preprocessing_Protocol.ipynb`) e modelagem (`03_Modeling.ipynb`) implementados e
+  executáveis em sequência;
 - modelo selecionado por protocolo fixado antes dos resultados: **K-Means com três
   regimes** usando só variáveis elétricas — ocioso indutivo, ocioso capacitivo e produção;
 - **Isolation Forest** com limiar de 1% calibrado na validação; na v1.1, alertas em trocas de regime são suprimidos (49 → 5 alertas no teste);
@@ -29,6 +30,8 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
   elétrico;
 - modelo, métricas, resultados e manifesto de integridade publicados em `artifacts/`;
 - decisões, nomes dos regimes e triagem dos alertas aguardam revisão da equipe; o material está em `04_Review.ipynb` e na página Team Review da documentação.
+- dashboard Streamlit de monitoramento (visão geral, monitoramento, alertas, modelos e
+  relatórios) lendo os resultados publicados, com página para testar o modelo em um CSV;
 
 ## Equipe
 
@@ -39,7 +42,8 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 ## Notebooks
 
 1. `01_EDA.ipynb`: qualidade, distribuições, relações, PCA, t-SNE e baselines não supervisionados;
-2. `02_preprocessing.ipynb`: correção de timestamps, partição temporal, conjuntos de features e transformações;
+2. `02_preprocessing.ipynb`: comparação exploratória de configurações de features (split 80/20, `Day_of_week`, PCA);
+   `02b_Preprocessing_Protocol.ipynb`: preparação usada pelo modelo — correção de timestamps, partição treino / validação / teste, conjuntos de features e transformações;
 3. `03_Modeling.ipynb`: protocolo, comparação de candidatos, anomalias, congelamento, avaliação no teste e publicação.
 4. `04_Review.ipynb`: material para revisão da equipe — registro de decisões, evidências dos regimes e planilha de triagem dos alertas;
 5. `05_Transition_Filter.ipynb`: filtro de alertas em trocas de regime (modelo v1.1).
@@ -55,6 +59,19 @@ Ao executar o EDA, são produzidos localmente:
 - `artifacts/data/processed/dicionario_dados.csv`;
 - tabelas exploratórias em `artifacts/tables/`;
 - gráficos PNG em `artifacts/images/`.
+
+O dashboard de monitoramento consome o que os notebooks 03 a 05 publicam:
+
+- `artifacts/data/processed/analysis_results.csv`, com a série temporal enriquecida
+  (medições, `regime_name`, `anomaly_score`, `is_anomaly_raw`, `regime_boundary` e
+  `is_anomaly`);
+- `artifacts/metadata/final_metrics.json`, com métricas congeladas;
+- o modelo serializado em `artifacts/models/final_model.joblib`.
+
+Os nomes de coluna publicados são convertidos para os nomes canônicos do dashboard em
+`src/regime_anomaly/dashboard.py` (`COLUMN_ALIASES`). Estado e motivo do alerta
+(`alert_severity`, `alert_reason`) ainda não são publicados; até lá, o dashboard marca
+como "Atenção" as leituras com `is_anomaly`.
 
 ## Ambiente e execução
 
@@ -76,8 +93,15 @@ uv run pytest
 Para retomar a partir de um notebook: `uv run invoke notebooks --start 03_Modeling`.
 O `requirements.txt` é exportado do `uv.lock` (`uv export`) para quem usa `pip`.
 
-A aplicação Streamlit deve apenas consumir artefatos aprovados; treinamento não faz
-parte do processo web.
+A aplicação Streamlit apenas consome artefatos aprovados; treinamento não faz parte
+do processo web. Ela reproduz resultados históricos publicados como uma simulação de
+monitoramento, com atualização manual após novas publicações do pipeline. Alertas
+indicam comportamento atípico para investigação operacional: não são diagnósticos de
+falha, previsões de manutenção ou ordens de serviço.
+
+Quando houver classificação supervisionada de `Load_Type`, ela será apresentada como
+comparação de regimes conhecidos e não substituirá a segmentação e a detecção de
+anomalias não supervisionadas.
 
 ## Documentação
 

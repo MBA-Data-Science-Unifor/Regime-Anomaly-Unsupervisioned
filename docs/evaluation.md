@@ -47,29 +47,36 @@ which are both production electrically (92% of the idle-inductive regime is
 ## Transition filter (model v1.1)
 
 Notebook 05 suppresses alerts on regime boundaries, keeping the v1.0 threshold. The
-decision rule, fixed beforehand, required boundary alerts to be at least 3× the boundary
-reading share on validation; the observed lift was 9.5×.
+decision rule required boundary alerts to be at least 3× the boundary reading share on
+validation; the observed lift was 9.5×. The rule was written after notebook 04 had
+already shown that 88% of validation alerts (90% on test) fall on boundaries, so it
+documents the decision rather than testing it blind.
 
 | Split | Alerts v1.0 | Alerts v1.1 | Rate v1.1 |
 | --- | --- | --- | --- |
 | validation | 59 | 7 | 0.12% |
 | test | 49 | 5 | 0.09% |
 
-The remaining alerts share one signature: medium load (10–31 kWh) with leading current
-on weekend mornings, the same profile as the 22 May episode. In the July night episode,
+Ten of the 12 remaining alerts share one signature: medium load (10–31 kWh) with
+leading current on weekend mornings, the same profile as the 22 May episode. The other
+two are also weekend readings at medium load: Saturday 6 October 12:30 (production
+regime, 24 kWh) and Sunday 21 October 16:30. In the July night episode,
 7 of 29 alerts are suppressed because the event itself creates regime changes; 22 remain.
 Recalibrating the threshold on non-boundary readings instead would produce 54 validation
 alerts, mostly marginal.
 
-Caveats: the recurrence analysis looked at the whole year, so the test period is not
-fully independent for this change; and in continuous operation an alert is delayed by
+Caveats: the recurrence analysis and the boundary shares in notebook 04 looked at the
+whole year, test included, before this change was made, so the v1.1 test figures are
+not an independent evaluation of the filter; and in continuous operation an alert is delayed by
 15 minutes, because a boundary needs the next reading. `is_anomaly_raw` and
 `anomaly_score` remain published.
 
 ## Guardrails respected
 
-- Load_Type never entered a fit; it was inspected on train only in notebook 02 and used
-  for agreement only after freezing;
+- Load_Type never entered a fit and was used for agreement only after freezing. It was
+  inspected on train only, in notebook 02b, and that inspection did shape one design
+  choice: excluding calendar features from the regime set (D3). This is a deliberate,
+  disclosed use of the label before freezing;
 - the anomaly threshold was chosen on validation and reported on test;
 - PCA/t-SNE were not used for selection; all metrics are in the transformed space.
 

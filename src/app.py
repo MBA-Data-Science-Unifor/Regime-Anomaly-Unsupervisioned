@@ -1,143 +1,241 @@
-"""Streamlit app that reads published artifacts and never trains or rewrites them."""
+"""Read-only Streamlit dashboard for energy regimes and anomaly monitoring."""
 
 from __future__ import annotations
 
-from typing import Any
+from datetime import timedelta
 
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 
 from regime_anomaly.artifacts import ArtifactStore
-from regime_anomaly.config import ARTIFACTS
-from regime_anomaly.data import snake_case
-from regime_anomaly.i18n import (
-    DEFAULT_LOCALE,
-    LOCALE_LABELS,
-    SUPPORTED_LOCALES,
-    translate,
+from regime_anomaly.dashboard import (
+    DISPLAY_COLUMNS,
+    alert_severity,
+    artifact_status,
+    available_measurements,
+    load_metrics,
+    load_results,
+    metrics_version,
+    results_version,
 )
+from regime_anomaly.i18n import DEFAULT_LOCALE, translate
 
-st.set_page_config(page_title="Steel Energy Regimes", page_icon="⚡", layout="wide")
-store = ArtifactStore()
-RESULTS = "data/processed/analysis_results.csv"
-
-
-def artifact_exists(relative: str) -> bool:
-    return (ARTIFACTS / relative).exists()
+st.set_page_config(page_title="Monitoramento de energia", page_icon="⚡", layout="wide")
 
 
-@st.cache_data
-def load_results() -> pd.DataFrame:
-    frame = store.results()
-    frame["timestamp"] = pd.to_datetime(frame["timestamp"])
+@st.cache_data(show_spinner=False)
+def cached_results(version: int) -> pd.DataFrame:
+    return load_results(version)
+
+
+@st.cache_data(show_spinner=False)
+def cached_metrics(version: int) -> dict[str, object]:
+    return load_metrics()
+
+
+def results() -> pd.DataFrame:
+    return cached_results(results_version())
+
+
+def missing_artifacts() -> None:
+    names = {
+        "results": "resultados processados",
+        "metrics": "métricas finais",
+        "model": "modelo final",
+        "preprocessor": "pré-processador",
+    }
+    missing = [names[key] for key, present in artifact_status().items() if not present]
+    if missing:
+        st.info("Dashboard em modo de preparação. Artefatos ausentes: " + ", ".join(missing) + ".")
+
+
+def period_filter(frame: pd.DataFrame) -> pd.DataFrame:
+    if frame.empty or "timestamp" not in frame:
+        return frame
+    first, last = frame["timestamp"].min(), frame["timestamp"].max()
+    picked = st.sidebar.date_input(
+        "Período analisado", (first.date(), last.date()), first.date(), last.date()
+    )
+    if isinstance(picked, tuple) and len(picked) == 2:
+        return frame[
+            frame["timestamp"].between(
+                pd.Timestamp(picked[0]),
+                pd.Timestamp(picked[1]) + timedelta(days=1),
+                inclusive="left",
+            )
+        ]
     return frame
 
 
-def overview(locale: str) -> None:
-    st.title(translate("overview.title", locale))
-    st.caption(translate("overview.caption", locale))
-    if not artifact_exists("metadata/final_metrics.json"):
-        st.info(translate("overview.no_metrics", locale))
-        return
-    metrics: dict[str, Any] = store.metrics()
-    model, test = metrics["modelo"], metrics["teste"]
-    columns = st.columns(4)
-    columns[0].metric(
-        translate("overview.model", locale), f"{model['candidato']} · {model['conjunto']}"
+def overview(frame: pd.DataFrame) -> None:
+    st.title("Central de monitoramento energético")
+    st.caption(
+        "Demonstração com dados históricos publicados; não representa telemetria industrial ao vivo."
     )
-    columns[1].metric(translate("overview.test_silhouette", locale), f"{test['silhouette']:.3f}")
-    columns[2].metric(
-        translate("overview.stability", locale),
-        f"{metrics['validacao']['ari_bootstrap_media']:.3f}",
-    )
-    transition_filter = metrics.get("filtro_transicao")
-    if transition_filter:
-        filtered_rate = transition_filter["por_particao"]["test"]["taxa_com_filtro"]
-        columns[3].metric(
-            translate("overview.alert_rate_filtered", locale),
-            f"{filtered_rate:.2%}",
-            delta=f"{filtered_rate - test['taxa_alerta']:.2%}",
-            delta_color="off",
-            help=translate("overview.alert_rate_filtered_help", locale),
+    missing_artifacts()
+    if frame.empty:
+        st.write(
+            "Publique `artifacts/data/processed/analysis_results.csv` para preencher o monitoramento automaticamente."
         )
-    else:
-        columns[3].metric(translate("overview.alert_rate", locale), f"{test['taxa_alerta']:.2%}")
-
-    left, right = st.columns(2)
-    left.subheader(translate("overview.shares", locale))
-    left.dataframe(pd.DataFrame(metrics["proporcao_regimes"]).style.format("{:.1%}"))
-    right.subheader(translate("overview.external", locale))
-    right.dataframe(pd.DataFrame(metrics["concordancia_externa_teste"]).T.style.format("{:.3f}"))
-    right.caption(translate("overview.external_note", locale))
-
-    if not artifact_exists(RESULTS):
         return
-    results = load_results()
-    st.subheader(translate("overview.timeline", locale))
-    split = st.selectbox(
-        translate("overview.split", locale), ["validation", "test", "train"], index=1
+    severity = alert_severity(frame)
+    latest = frame.iloc[-1]
+    cards = st.columns(4)
+    cards[0].metric("Estado atual", severity.iloc[-1])
+    cards[1].metric("Última medição", latest["timestamp"].strftime("%d/%m/%Y %H:%M"))
+    cards[2].metric("Alertas no período", int((severity != "Normal").sum()))
+    cards[3].metric(
+        "Consumo atual (kWh)",
+        f"{latest['energy_consumption_kwh']:.2f}"
+        if "energy_consumption_kwh" in latest
+        else "Indisponível",
     )
-    window = results[results["split"] == split]
-    figure = px.scatter(
-        window,
+    measurements = available_measurements(frame)
+    if measurements:
+        metric = measurements[0]
+        figure = px.line(
+            frame,
+            x="timestamp",
+            y=metric,
+            labels={"timestamp": "Data e hora", metric: DISPLAY_COLUMNS[metric]},
+        )
+        alerts = frame.loc[severity != "Normal"]
+        if not alerts.empty:
+            figure.add_scatter(
+                x=alerts["timestamp"],
+                y=alerts[metric],
+                mode="markers",
+                name="Alerta",
+                marker={"color": "#D55E00", "size": 9},
+            )
+        st.plotly_chart(figure, use_container_width=True)
+
+
+def monitoring(frame: pd.DataFrame) -> None:
+    st.title("Monitoramento temporal")
+    st.caption(
+        "A atualização lê novamente os resultados publicados; a interface nunca treina modelos."
+    )
+    if frame.empty:
+        missing_artifacts()
+        return
+    measurements = available_measurements(frame)
+    if not measurements:
+        st.warning("Não há medidas numéricas reconhecidas para visualização.")
+        return
+    metric = st.selectbox("Métrica", measurements, format_func=lambda name: DISPLAY_COLUMNS[name])
+    data = frame.assign(severidade=alert_severity(frame))
+    figure = px.line(
+        data,
         x="timestamp",
-        y="usage_kwh",
-        color="regime_name",
-        symbol="is_anomaly",
-        symbol_map={False: "circle", True: "x"},
-        opacity=0.6,
+        y=metric,
+        color="severidade",
+        labels={
+            "timestamp": "Data e hora",
+            metric: DISPLAY_COLUMNS[metric],
+            "severidade": "Estado",
+        },
+        color_discrete_map={"Normal": "#009E73", "Atenção": "#E69F00", "Crítico": "#D55E00"},
     )
-    figure.update_traces(marker={"size": 4})
-    st.plotly_chart(figure, width="stretch")
-    st.subheader(translate("overview.anomalies", locale))
-    st.dataframe(
-        window[window["is_anomaly"]].nlargest(20, "anomaly_score"),
-        width="stretch",
-        hide_index=True,
-    )
+    st.plotly_chart(figure, use_container_width=True)
+    st.dataframe(data.tail(100), use_container_width=True, hide_index=True)
 
 
-def charts(locale: str) -> None:
-    st.title(translate("charts.title", locale))
-    tables = sorted((ARTIFACTS / "tables").glob("*.csv"))
-    if not tables:
-        st.info(translate("charts.no_tables", locale))
+def alerts(frame: pd.DataFrame) -> None:
+    st.title("Central de alertas")
+    if frame.empty:
+        missing_artifacts()
         return
-    selected = st.selectbox(
-        translate("charts.table", locale), tables, format_func=lambda path: path.stem
+    data = frame.assign(alert_severity=alert_severity(frame))
+    choices = st.multiselect(
+        "Severidade",
+        sorted(data.alert_severity.unique()),
+        default=[item for item in ("Atenção", "Crítico") if item in set(data.alert_severity)],
     )
-    frame = pd.read_csv(selected)
-    st.dataframe(frame, width="stretch", hide_index=True)
-    numeric = frame.select_dtypes("number").columns.tolist()
-    if len(numeric) >= 2:
-        x_axis = st.selectbox(translate("charts.x_axis", locale), numeric, index=0)
-        y_axis = st.selectbox(translate("charts.y_axis", locale), numeric, index=1)
-        st.plotly_chart(px.scatter(frame, x=x_axis, y=y_axis), width="stretch")
+    filtered = data[data.alert_severity.isin(choices)]
+    if filtered.empty:
+        st.success("Não há alertas para os filtros selecionados.")
+        return
+    columns = [
+        name
+        for name in [
+            "timestamp",
+            "alert_severity",
+            "anomaly_score",
+            "alert_reason",
+            "supervised_load_type",
+            "cluster_operational_profile",
+            "energy_consumption_kwh",
+        ]
+        if name in filtered
+    ]
+    st.dataframe(filtered[columns], use_container_width=True, hide_index=True)
+    st.download_button(
+        "Baixar alertas em CSV",
+        filtered.to_csv(index=False).encode("utf-8-sig"),
+        "alertas.csv",
+        "text/csv",
+    )
 
 
-def test_model(locale: str) -> None:
-    st.title(translate("model.title", locale))
-    model_available = artifact_exists("models/final_model.joblib")
-    if not model_available:
-        st.warning(translate("model.unavailable", locale))
-    st.caption(translate("model.help", locale))
+def models(_: pd.DataFrame) -> None:
+    st.title("Modelos e qualidade")
+    metrics = cached_metrics(metrics_version())
+    if metrics:
+        st.json(metrics)
+    else:
+        st.info("As métricas aparecerão após a publicação de `metadata/final_metrics.json`.")
+
+
+def reports(frame: pd.DataFrame) -> None:
+    st.title("Relatório operacional")
+    if frame.empty:
+        missing_artifacts()
+        return
+    severity = alert_severity(frame)
+    report = pd.DataFrame(
+        {
+            "Início do período": [frame.timestamp.min()],
+            "Fim do período": [frame.timestamp.max()],
+            "Medições analisadas": [len(frame)],
+            "Alertas": [int((severity != "Normal").sum())],
+            "Alertas críticos": [int((severity == "Crítico").sum())],
+        }
+    )
+    st.dataframe(report, use_container_width=True, hide_index=True)
+    st.download_button(
+        "Baixar resumo em CSV",
+        report.to_csv(index=False).encode("utf-8-sig"),
+        "relatorio_operacional.csv",
+        "text/csv",
+    )
+    st.caption(
+        "Alertas apoiam investigação operacional; não são diagnósticos de falha ou ordens de manutenção."
+    )
+
+
+def test_model(_: pd.DataFrame) -> None:
+    """Run the published model on an uploaded CSV in the UCI layout (never retrains)."""
+    st.title(translate("model.title", DEFAULT_LOCALE))
+    available = artifact_status()["model"]
+    if not available:
+        st.warning(translate("model.unavailable", DEFAULT_LOCALE))
+    st.caption(translate("model.help", DEFAULT_LOCALE))
     uploaded = st.file_uploader(
-        translate("model.upload", locale), type="csv", disabled=not model_available
+        translate("model.upload", DEFAULT_LOCALE), type="csv", disabled=not available
     )
     if uploaded is None:
         return
-    frame = pd.read_csv(uploaded)
-    frame.columns = [snake_case(column) for column in frame.columns]
     try:
-        prediction = store.model().predict(frame)
+        prediction = ArtifactStore().model().predict(pd.read_csv(uploaded))
     except (ValueError, KeyError, TypeError, NotImplementedError) as error:
-        st.error(translate("model.error", locale, error=error))
+        st.error(translate("model.error", DEFAULT_LOCALE, error=error))
         return
     st.success(
         translate(
             "model.summary",
-            locale,
+            DEFAULT_LOCALE,
             rows=len(prediction),
             anomalies=int(prediction["is_anomaly"].sum()),
         )
@@ -145,18 +243,20 @@ def test_model(locale: str) -> None:
     st.dataframe(prediction, width="stretch", hide_index=True)
 
 
-PAGES = {"overview": overview, "charts": charts, "test_model": test_model}
-st.sidebar.title("Steel Energy")
-locale = st.sidebar.selectbox(
-    translate("language", DEFAULT_LOCALE),
-    SUPPORTED_LOCALES,
-    format_func=LOCALE_LABELS.__getitem__,
-    index=SUPPORTED_LOCALES.index(DEFAULT_LOCALE),
-)
-page = st.sidebar.radio(
-    translate("nav.page", locale),
-    PAGES,
-    format_func=lambda page_key: translate(f"nav.{page_key}", locale),
-    label_visibility="collapsed",
-)
-PAGES[page](locale)
+PAGES = {
+    "Visão geral": overview,
+    "Monitoramento": monitoring,
+    "Alertas": alerts,
+    "Modelos": models,
+    "Relatórios": reports,
+    "Testar modelo": test_model,
+}
+st.sidebar.title("⚡ Steel Energy")
+st.sidebar.caption("Regimes operacionais e anomalias")
+if st.sidebar.button("Atualizar dados", use_container_width=True):
+    cached_results.clear()
+    cached_metrics.clear()
+    st.rerun()
+st.sidebar.caption("Use este botão após o pipeline publicar novos artefatos.")
+selected_page = st.sidebar.radio("Navegação", list(PAGES))
+PAGES[selected_page](period_filter(results()))

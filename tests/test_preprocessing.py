@@ -79,7 +79,7 @@ def test_preprocessor_fits_on_train_and_never_uses_label(feature_set: str) -> No
 
     train = prepared[prepared[pp.SPLIT_COLUMN] == "train"]
     test = prepared[prepared[pp.SPLIT_COLUMN] == "test"]
-    preprocessor = pp.build_preprocessor(feature_set).fit(train[columns])
+    preprocessor = pp.build_feature_preprocessor(feature_set).fit(train[columns])
 
     transformed_train = preprocessor.transform(train[columns])
     assert transformed_train.shape == (len(train), len(columns))
@@ -95,3 +95,14 @@ def test_regime_set_excludes_calendar() -> None:
 def test_label_guard() -> None:
     with pytest.raises(ValueError):
         pp.assert_no_label([pp.USAGE, LABEL_COLUMN])
+
+
+def test_iso_dates_parse_like_uci_dates() -> None:
+    raw = synthetic_raw(days=20)
+    expected = pp.chronological_timestamps(raw)
+    iso = raw.assign(
+        date=pd.to_datetime(raw["date"], format="%d/%m/%Y %H:%M").dt.strftime("%Y-%m-%d %H:%M:%S")
+    )
+    pd.testing.assert_series_equal(pp.chronological_timestamps(iso), expected)
+    with pytest.raises(ValueError):
+        pp.chronological_timestamps(raw.assign(date="not a date"))

@@ -1,5 +1,4 @@
-from regime_anomaly.config import ARTIFACTS, RAW_DIR
-from regime_anomaly.pipeline import ARTIFACT_CONTRACT
+from regime_anomaly import ARTIFACT_CONTRACT, ARTIFACTS, RAW_DIR
 
 
 def test_artifact_contract_stays_inside_artifacts() -> None:
