@@ -11,6 +11,8 @@ import streamlit as st
 from regime_anomaly.dashboard import (
     DISPLAY_COLUMNS,
     RESULTS_PATH,
+    PREPROCESSING_PATH,
+    load_preprocessing_data,
     alert_severity,
     artifact_status,
     available_measurements,
@@ -213,11 +215,55 @@ def reports(frame: pd.DataFrame) -> None:
     )
 
 
+@st.cache_data(show_spinner=False)
+def cache_preprocessing(version: int):
+    return load_preprocessing_data()
+
+
+def preprocessing(_: pd.DataFrame) -> None:
+    st.title("Preparação dos dados")
+
+    version = PREPROCESSING_PATH.stat().st_mtime_ns if PREPROCESSING_PATH.exists() else 0
+    meta = cache_preprocessing(version)
+    if not meta:
+        st.info("Execute o notebook 02 para publicar `metadata/preprocessed_data.json`.")
+        return
+
+    st.caption(f"Configuração escolhida: {meta['chosen_config']}")
+    cards = st.columns(3)
+    cards[0].metric("Linhas de treino", meta["n_train"])
+    cards[1].metric("Linhas de teste", meta["n_test"])
+    cards[2].metric("Componentes PCA", len(meta["pca_components"]))
+
+    st.write(f"Divisão temporal: treino de {meta['train_date_range'][0][:10]} "
+             f"a {meta['train_date_range'][1][:10]}; teste até {meta['test_date_range'][1][:10]}.")
+
+    left, right = st.columns(2)
+    with left:
+        st.subheader("Entram no modelo")
+        st.write("Numéricas (padronizadas):", ", ".join(meta["feature_numeric"]))
+        st.write("Categóricas (one-hot):", ", ".join(meta["one_hot_features"]))
+    with right:
+        st.subheader("Ficam de fora")
+        st.write("Só para validar clusters:", ", ".join(meta["feature_reporting_only"]))
+        st.write("Removidas:", ", ".join(meta["feature_deleted"]))
+
+    st.subheader("Variância explicada pelo PCA")
+    pca = pd.DataFrame({
+        "Componente": meta["pca_components"],
+        "Variância acumulada (%)": [round(v * 100, 1) for v in meta["cumulative_variance"]],
+    })
+    st.plotly_chart(px.bar(pca, x="Componente", y="Variância acumulada (%)"),
+                    use_container_width=True)
+
+
+
 PAGES = {
     "Visão geral": overview,
     "Monitoramento": monitoring,
     "Alertas": alerts,
     "Modelos": models,
+    "Preparação": preprocessing,
     "Relatórios": reports,
 }
 st.sidebar.title("⚡ Steel Energy")

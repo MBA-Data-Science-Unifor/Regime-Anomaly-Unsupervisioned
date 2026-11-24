@@ -10,6 +10,8 @@ from .config import ARTIFACTS
 
 RESULTS_PATH = ARTIFACTS / "data" / "processed" / "analysis_results.csv"
 METRICS_PATH = ARTIFACTS / "metadata" / "final_metrics.json"
+PREPROCESSING_PATH = ARTIFACTS / "metadata" / "preprocessed_data.json"
+
 
 # Accept original UCI names during the transition; publish canonical names later.
 COLUMN_ALIASES = {
@@ -91,3 +93,9 @@ def alert_severity(frame: pd.DataFrame) -> pd.Series:
     if "is_anomaly" in frame:
         return frame["is_anomaly"].map({True: "Atenção", False: "Normal"}).fillna("Normal")
     return pd.Series("Sem classificação", index=frame.index)
+
+
+def load_preprocessing_data():
+    if not PREPROCESSING_PATH.exists():
+        return {}
+    return json.loads(PREPROCESSING_PATH.read_text(encoding="utf-8"))

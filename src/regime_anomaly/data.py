@@ -13,7 +13,6 @@ import json
 DEFAULT_DATASET = RAW_DIR / "Steel_industry_data.csv"
 LABEL_COLUMN = "Load_Type"
 DEFAULT_PREPROCESSOR = MODELS_DIR / "preprocessor.joblib"
-PREPROCESSING_PATH = ARTIFACTS / "metadata" / "preprocessed_data.json"
 
 
 def load_data(path: str | Path | None = None) -> pd.DataFrame:
@@ -31,12 +30,6 @@ def load_preprocessor(path_file: Path = Path(DEFAULT_PREPROCESSOR)):
         )
 
     return joblib.load(path_file)
-
-def load_preprocessing_data():
-    if not PREPROCESSING_PATH.exists():
-        return {}
-    return json.loads(PREPROCESSING_PATH.read_text(encoding="utf-8"))
-
 
 def snake_case(value: str) -> str:
     value = re.sub(r"[^0-9A-Za-z]+", "_", value.strip())
