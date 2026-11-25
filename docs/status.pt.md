@@ -17,6 +17,17 @@
 | Streamlit | painel de monitoramento (visão geral, monitoramento, alertas, modelos, relatórios) que lê os resultados publicados, mais uma página que executa o modelo em um CSV enviado |
 | MkDocs | atualizado até a avaliação |
 
+| Dicionário de dados | gerado localmente |
+| Figuras exploratórias | 21 geradas localmente, incluindo rastreamento pós-hoc de anomalias |
+| Tabelas exploratórias | 5 geradas localmente |
+| K-Means/GMM com três regimes | baselines exploratórios concluídos |
+| Isolation Forest | baseline global concluído; comparação contextual pendente |
+| Notebook de preparação | implementado; configuração em revisão |
+| Protocolo do modelo final | pendente |
+| Avaliação congelada | pendente |
+| Streamlit | dashboard de monitoramento, alertas e relatórios disponível |
+| MkDocs | atualizado para o conjunto de dados e a metodologia atuais |
+
 ## Pendências
 
 Os itens 1–3 dependem de pessoas. Cada um está preparado em

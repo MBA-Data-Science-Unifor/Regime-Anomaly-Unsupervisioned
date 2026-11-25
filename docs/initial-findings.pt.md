@@ -72,6 +72,19 @@ o problema de negócio tenha oito regimes.
 O Isolation Forest sinaliza 701 observações sob uma taxa de contaminação presumida de
 2%. Esses registros são candidatos à investigação, não falhas confirmadas.
 
+O cruzamento pós-hoc com `Load_Type` mostra uma concentração desigual dos sinais: 0,88%
+em `Light_Load`, 3,52% em `Medium_Load` e 2,76% em `Maximum_Load`. Como `Load_Type`
+descreve carga — e não falha — essa diferença não mede acurácia nem erro do detector. Ela
+indica que um score global pode confundir contextos operacionais distintos e motiva a
+comparação futura com uma detecção contextual por perfil não supervisionado, hora e tipo
+de dia.
+
+![Taxa de sinalização do Isolation Forest por regime de referência](assets/images/isolation-forest-target-tracking.png)
+
+*Figura 5 — Distribuição pós-hoc dos sinais por `Load_Type`, que permaneceu fora do
+treinamento. A linha tracejada é a taxa total configurada de aproximadamente 2%; o gráfico
+descreve concentração de alertas, não incidência comprovada de falhas.*
+
 ## Próximas verificações
 
 Essas verificações foram tratadas em [Preparação dos dados](data-preparation.md),

@@ -4,6 +4,7 @@
 | --- | --- |
 | Steel Industry raw dataset | available locally |
 | EDA notebook | implemented; review in progress |
+<<<<<<< HEAD
 | Preparation notebooks | 02 (configuration comparison) and 02b (protocol used by the model); decisions pending approval |
 | Preprocessing module | `preprocessing.py` with tests |
 | Modeling notebook | implemented with a protocol fixed before results |
@@ -16,6 +17,18 @@
 | Reproduction | `uv run invoke notebooks` runs 01–05 in order |
 | Streamlit | monitoring dashboard (overview, monitoring, alerts, models, reports) reading published results, plus a page that runs the model on an uploaded CSV |
 | MkDocs | updated through evaluation |
+=======
+| Data dictionary | generated locally |
+| Exploratory figures | 21 generated locally, including post-hoc anomaly tracking |
+| Exploratory tables | 5 generated locally |
+| Three-regime K-Means/GMM | exploratory baselines complete |
+| Isolation Forest | global exploratory baseline complete; contextual comparison pending |
+| Preparation notebook | implemented; configuration under review |
+| Final model protocol | pending |
+| Frozen evaluation | pending |
+| Streamlit | monitoring, alert, and reporting dashboard available |
+| MkDocs | updated to current dataset and methodology |
+>>>>>>> branch_alex
 
 ## Pending
 

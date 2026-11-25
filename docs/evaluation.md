@@ -16,7 +16,15 @@ model, preprocessing and anomaly threshold were fixed. Values come from
 Regime shares stay close across periods: idle inductive 38% / 42% / 41%, idle
 capacitive 24% / 21% / 24%, production 38% / 37% / 34% (train / validation / test).
 
-## Anomaly evidence
+
+# Probabilistic and anomaly evidence
+
+- GMM likelihood, AIC/BIC diagnostics, and assignment uncertainty;
+- Isolation Forest score distribution and sensitivity to contamination;
+- stability of the top-ranked anomaly set;
+- review by time window and operating context.
+- signal distribution by unsupervised profile, hour, and day type;
+- comparison between the global baseline and a contextual detector, including alert persistence.
 
 - the top 1% on validation overlaps 87% on average across five seeds (Jaccard);
 - about 40% of validation alerts repeat at the same weekday and time in three or more
@@ -43,6 +51,10 @@ which are both production electrically (92% of the idle-inductive regime is
     November and December are absent from training, so that rule collapses to a
     constant (ARI = 0). The reference uses hour and week status. This affects only the
     reference, not model selection, which was already frozen.
+
+`Load_Type` may also be used in a post-hoc table to describe which load regimes occur
+among signals. That table is not an anomaly metric: it must not calibrate the threshold,
+equalize class rates, or turn an alert into a confirmed failure.
 
 ## Transition filter (model v1.1)
 

@@ -4,10 +4,10 @@
 
 | Component | Responsibility |
 | --- | --- |
-| artifacts/notebooks | analysis record; notebooks 02–05 fit, evaluate and publish |
-| src/regime_anomaly | reusable code shared by notebooks and inference (`preprocessing`, `modeling`, `artifacts`) |
-| artifacts | locally generated publication contract |
-| src/app.py | read-only presentation of published results and inference on uploaded CSV files |
+| artifacts/notebooks | investigation and experiment records |
+| src/regime_anomaly | approved reusable code |
+| artifacts | local generated publication contract |
+| src/app.py | read-only dashboard for monitoring, alerts, models, and reports |
 | docs | methodology, evidence, decisions, and limitations |
 | tests | preprocessing, model bundle, manifest, and translation checks |
 
@@ -19,7 +19,11 @@ are generated locally and ignored by Git. Directory placeholders remain versione
 and license, the SHA-256 hash of every published artifact, and the reproduction steps.
 
 Streamlit must not train or rewrite analytical artifacts. It remains usable in an
-informational mode when optional artifacts are absent.
+informational mode when optional artifacts are absent and reloads results published to
+`data/processed/analysis_results.csv` through an explicit user action.
+
+The dashboard presents historical results as a monitoring simulation; alerts support
+operational investigation and are not fault diagnoses or maintenance predictions.
 
 ## Execution
 

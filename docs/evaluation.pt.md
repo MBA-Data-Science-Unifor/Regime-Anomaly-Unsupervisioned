@@ -17,7 +17,16 @@ As participações dos regimes permanecem próximas entre os períodos: ocioso i
 38% / 42% / 41%, ocioso capacitivo 24% / 21% / 24%, produção 38% / 37% / 34%
 (treino / validação / teste).
 
+<<<<<<< HEAD
 ## Evidências de anomalias
+=======
+- verossimilhança do GMM, diagnósticos AIC/BIC e incerteza da atribuição;
+- distribuição dos escores do Isolation Forest e sensibilidade à contaminação;
+- estabilidade do conjunto de anomalias mais bem classificadas;
+- revisão por janela temporal e contexto operacional.
+- distribuição dos sinais por perfil não supervisionado, hora e tipo de dia;
+- comparação entre baseline global e detector contextual, incluindo persistência dos alertas.
+>>>>>>> branch_alex
 
 - o top 1% da validação se sobrepõe em 87%, em média, entre cinco sementes (Jaccard);
 - cerca de 40% dos alertas da validação se repetem no mesmo dia da semana e horário em
@@ -45,6 +54,10 @@ indutivo é `Light_Load`).
     **e mês**. Novembro e dezembro não estão presentes no treino, então essa regra se
     reduz a uma constante (ARI = 0). A referência usa hora e situação da semana. Isso
     afeta apenas a referência, não a seleção do modelo, que já estava congelada.
+
+`Load_Type` também pode ser usado em uma tabela pós-hoc para descrever quais regimes de
+carga aparecem entre os sinais. Essa tabela não é métrica de anomalia: não deve calibrar
+o limiar, equalizar taxas entre classes nem transformar um alerta em falha confirmada.
 
 ## Filtro de transição (modelo v1.1)
 

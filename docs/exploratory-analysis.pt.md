@@ -10,7 +10,7 @@ A EDA implementada está registrada em `artifacts/notebooks/01_EDA.ipynb`.
 4. projeções PCA e t-SNE;
 5. diagnósticos de assimetria, IQR, Spearman e dia-hora;
 6. baselines de K-Means e GMM com três regimes;
-7. sinais exploratórios do Isolation Forest;
+7. sinais exploratórios do Isolation Forest e seu rastreamento pós-hoc por `Load_Type`;
 8. justificativas para técnicas selecionadas e adiadas.
 
 ## Regras de interpretação
@@ -20,17 +20,19 @@ A EDA implementada está registrada em `artifacts/notebooks/01_EDA.ipynb`.
 - cotovelo, silhueta, AIC e BIC são diagnósticos, não seletores automáticos;
 - extremos segundo o IQR não são equivalentes a anomalias;
 - sinais do Isolation Forest não são incidentes confirmados;
-- nenhum estimador supervisionado ou métrica baseada em rótulo pertence à EDA.
+- `Load_Type` pode ser cruzado apenas depois do ajuste para descrever a concentração dos
+  sinais; ele não ajusta nem valida o detector.
 
 ## Saídas geradas
 
-O notebook grava um dicionário de dados, resumos CSV e 20 figuras PNG em `artifacts`.
+O notebook grava um dicionário de dados, resumos CSV e 21 figuras PNG em `artifacts`.
 Essas saídas são deliberadamente ignoradas pelo Git e devem ser regeneradas localmente.
 As impressões quantitativas estáveis estão resumidas em
 [Descobertas iniciais](initial-findings.md).
 
 A documentação publica versões compactas e reproduzíveis das figuras de correlação,
-consumo mês–hora e diagnóstico do K-Means. Elas podem ser regeneradas com:
+consumo mês–hora, diagnóstico do K-Means e rastreamento pós-hoc de sinais. Elas podem ser
+regeneradas com:
 
     python scripts/generate_docs_figures.py
 

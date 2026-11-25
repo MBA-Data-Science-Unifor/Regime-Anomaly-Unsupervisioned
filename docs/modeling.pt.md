@@ -64,6 +64,20 @@ v1.1; consulte [Avaliação](evaluation.md#filtro-de-transicao-modelo-v11)) e me
 nunca através de lacunas) e `is_anomaly` (indicador bruto, menos as fronteiras quando o
 filtro está ligado).
 
+## Próxima comparação de anomalias
+
+O Isolation Forest atual é um baseline global com contaminação exploratória de 2%. O
+rastreamento pós-hoc por `Load_Type` revelou concentração desigual de sinais, o que não
+é uma métrica de erro porque carga não é rótulo de falha. A próxima comparação deve testar
+uma versão contextual: perfis descobertos sem supervisão, hora e tipo de dia definem o
+contexto; os desvios de consumo e das variáveis elétricas dentro desse contexto recebem o
+score de anomalia. Limiares e persistência de alertas devem ser congelados fora dos mesmos
+dados usados para relato.
+
+Uma futura classificação supervisionada de `Load_Type` terá objetivo próprio: prever o
+regime conhecido e ser avaliada com divisão temporal, macro-F1 e acurácia balanceada. Ela
+não transforma `Load_Type` em rótulo de falha e não valida o detector de anomalias.
+
 ## Candidatos adiados
 
 DBSCAN/HDBSCAN, agrupamento hierárquico, K-Medoids, agrupamento espectral, SOM, UMAP,
