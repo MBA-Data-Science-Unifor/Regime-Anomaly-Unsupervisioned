@@ -245,7 +245,7 @@ def preprocessing(_: pd.DataFrame) -> None:
     with left:
         st.subheader("Entram no modelo")
         st.write("Numéricas (padronizadas):", ", ".join(meta["feature_numeric"]))
-        st.write("Categóricas (one-hot):", ", ".join(meta["one_hot_features"]))
+        st.write("Categóricas (one-hot):", ", ".join(meta["feature_categoric"]))
     with right:
         st.subheader("Ficam de fora")
         st.write("Só para validar clusters:", ", ".join(meta["feature_reporting_only"]))
@@ -298,6 +298,7 @@ PAGES = {
     "Relatórios": reports,
     "Testar modelo": test_model,
 }
+
 st.sidebar.title("⚡ Steel Energy")
 st.sidebar.caption("Regimes operacionais e anomalias")
 if st.sidebar.button("Atualizar dados", use_container_width=True):
