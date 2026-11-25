@@ -11,9 +11,9 @@ import sys
 from collections import Counter
 
 from pathlib import Path
-from .data import LABEL_COLUMN
+from .data import LABEL_COLUMN, load_data
 from .artifacts import MANIFEST, verify_manifest
-from .config import ARTIFACTS, MODELS_DIR, PROCESSED_DIR, RAW_DIR, ensure_artifact_dirs, load_data, METADATA_DIR
+from .config import ARTIFACTS, MODELS_DIR, PROCESSED_DIR, RAW_DIR, ensure_artifact_dirs, METADATA_DIR
 from .preprocessing import FEATURE_CONFIGS, FEATURE_DELETED, FEATURE_CATEGORICAL, FEATURE_NUMERIC, FEATURE_REPORTED, split_columns, build_preprocessor
 import pandas as pd
 import numpy as np
