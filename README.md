@@ -8,7 +8,8 @@ de `Load_Type`, e sinalizar observações incomuns sem usar os rótulos para tre
 
 A fonte é o conjunto
 [Steel Industry Energy Consumption](https://archive.ics.uci.edu/dataset/851/steel+industry+energy+consumption),
-publicado no UCI Machine Learning Repository. O arquivo local esperado é:
+publicado no UCI Machine Learning Repository. Uma cópia do CSV bruto é versionada no
+repositório, para que os notebooks possam ser executados logo após o clone:
 
 ```text
 artifacts/data/raw/Steel_industry_data.csv
@@ -42,14 +43,16 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 
 1. `01_EDA.ipynb`: qualidade, distribuições, relações, PCA, t-SNE e baselines não supervisionados;
 2. `02_Preprocessing.ipynb`: síntese da comparação exploratória e protocolo publicado — correção de timestamps, partição treino / validação / teste, conjuntos de features e transformações;
-3. `03_Modeling.ipynb`: protocolo, comparação de candidatos, anomalias, avaliação no teste, filtro de transições v1.1 e publicação.
-4. `04_Review.ipynb`: material para revisão da equipe — registro de decisões, evidências dos regimes e planilha de triagem dos alertas;
+3. `03_Modeling.ipynb`: seleciona os regimes, calibra o detector de anomalias, avalia o período de teste e publica os artefatos finais da versão v1.1;
+4. `04_Review.ipynb`: material para revisão da equipe — registro de decisões, evidências dos regimes e planilha de triagem dos alertas. Este notebook é somente de leitura: ele não reconfigura nem republica modelos.
 
 ## Artefatos e versionamento
 
-Dados locais e saídas regeneráveis não são versionados para evitar crescimento do
-repositório. O `.gitignore` preserva apenas os arquivos `.gitkeep` dentro de
-`artifacts/data`, `images`, `tables`, `models` e `metadata`.
+O CSV bruto `artifacts/data/raw/Steel_industry_data.csv` é versionado para garantir uma
+execução reproduzível dos notebooks. As demais saídas regeneráveis não são versionadas
+para evitar crescimento do repositório. O `.gitignore` preserva apenas os arquivos
+`.gitkeep` dentro de `artifacts/data/processed`, `images`, `tables`, `models` e
+`metadata`.
 
 Ao executar o EDA, são produzidos localmente:
 
@@ -74,9 +77,10 @@ como "Atenção" as leituras com `is_anomaly`.
 
 Requer Python 3.12 ou superior e [uv](https://docs.astral.sh/uv/).
 
-Antes de executar, baixe `Steel_industry_data.csv` da
-[UCI](https://archive.ics.uci.edu/dataset/851/steel+industry+energy+consumption) para
-`artifacts/data/raw/`. O projeto nunca baixa o arquivo automaticamente.
+O CSV bruto já está disponível em `artifacts/data/raw/Steel_industry_data.csv`. Caso
+precise restaurá-lo, baixe `Steel_industry_data.csv` da
+[UCI](https://archive.ics.uci.edu/dataset/851/steel+industry+energy+consumption) e
+mantenha esse mesmo nome e caminho. O projeto nunca baixa o arquivo automaticamente.
 
 ```bash
 uv sync --locked --group analysis --group docs --group test
