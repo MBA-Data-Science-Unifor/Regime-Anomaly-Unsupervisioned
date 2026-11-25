@@ -393,7 +393,6 @@ def describe_preprocessor(pipeline: Pipeline) -> dict[str, object]:
         "explained_variance_ratio": ratio,
         "cumulative_variance": [float(value) for value in np.cumsum(ratio)],
     }
-<<<<<<< HEAD
 
 
 def evaluate_config(cols: list[str], X, y, pca: float | None) -> tuple[float, float]:
@@ -420,5 +419,3 @@ def create_silhouette_ari_dataframe(configs: dict, X_train, y_train) -> pd.DataF
         results.append({"Config": name, "Silhouette": sil, "ARI": ari})
 
     return pd.DataFrame(results)
-=======
->>>>>>> branch_caio
