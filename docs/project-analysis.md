@@ -22,9 +22,9 @@
 | artifacts/data/processed | dictionaries and prepared data | ignored |
 | artifacts/tables | generated analytical tables | ignored |
 | artifacts/images | generated figures | ignored |
-| artifacts/models | future serialized bundles | ignored |
-| artifacts/metadata | future metrics and manifest | ignored |
-| artifacts/notebooks | reproducible investigation | versioned without outputs |
+| artifacts/models | serialized `ModelBundle` (`final_model.joblib`) | ignored |
+| artifacts/metadata | metrics, preprocessing record and manifest | ignored |
+| artifacts/notebooks | reproducible investigation | versioned with outputs, so results read without re-running |
 
 Approved reusable logic should move from notebooks to src/regime_anomaly. Documentation
 records stable methodology and preliminary evidence, while heavy outputs are regenerated

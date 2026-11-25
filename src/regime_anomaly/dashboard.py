@@ -26,6 +26,17 @@ COLUMN_ALIASES = {
     "WeekStatus": "day_type",
     "Day_of_week": "day_of_week",
     "Load_Type": "reference_load_type",
+    # snake_case names published by notebooks 03-05 (analysis_results.csv)
+    "usage_kwh": "energy_consumption_kwh",
+    "lagging_current_reactive_power_kvarh": "lagging_reactive_energy_kvarh",
+    "leading_current_reactive_power_kvarh": "leading_reactive_energy_kvarh",
+    "lagging_current_power_factor": "lagging_power_factor_pct",
+    "leading_current_power_factor": "leading_power_factor_pct",
+    "co2_tco2": "co2_emissions_tco2",
+    "nsm": "seconds_since_midnight",
+    "weekstatus": "day_type",
+    "load_type": "reference_load_type",
+    "regime_name": "cluster_operational_profile",
 }
 
 DISPLAY_COLUMNS = {
@@ -49,9 +60,27 @@ def artifact_status() -> dict[str, bool]:
     }
 
 
+def metrics_version() -> int:
+    """Cache key for ``final_metrics.json`` (its own mtime, not the results file's)."""
+    return METRICS_PATH.stat().st_mtime_ns if METRICS_PATH.exists() else 0
+
+
 def results_version() -> int:
     """Use file mtime as a cache key without writing any artifact."""
     return RESULTS_PATH.stat().st_mtime_ns if RESULTS_PATH.exists() else 0
+
+
+def parse_timestamps(values: pd.Series) -> pd.Series:
+    """Parse ISO timestamps (published results) and UCI ``dd/mm/yyyy HH:MM`` dates.
+
+    ``dayfirst=True`` alone misreads ISO strings whose day is above 12 and turns them
+    into NaT, so ISO is tried first and day-first only fills what is left.
+    """
+    parsed = pd.to_datetime(values, format="ISO8601", errors="coerce")
+    missing = parsed.isna()
+    if missing.any():
+        parsed[missing] = pd.to_datetime(values[missing], dayfirst=True, errors="coerce")
+    return parsed
 
 
 def load_results(_version: int) -> pd.DataFrame:
@@ -63,7 +92,7 @@ def load_results(_version: int) -> pd.DataFrame:
         columns={key: value for key, value in COLUMN_ALIASES.items() if key in frame}
     )
     if "timestamp" in frame:
-        frame["timestamp"] = pd.to_datetime(frame["timestamp"], errors="coerce", dayfirst=True)
+        frame["timestamp"] = parse_timestamps(frame["timestamp"])
         frame = frame.dropna(subset=["timestamp"]).sort_values("timestamp")
     if "seconds_since_midnight" in frame and "hour_of_day" not in frame:
         frame["hour_of_day"] = (

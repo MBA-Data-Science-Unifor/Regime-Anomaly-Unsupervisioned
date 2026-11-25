@@ -46,6 +46,7 @@ exclude = [
 [dependency-groups]
 analysis = [
     "ipykernel>=7.4.0",
+    "nbconvert>=7.16",
 ]
 dev = [
     "invoke>=3.0.3",

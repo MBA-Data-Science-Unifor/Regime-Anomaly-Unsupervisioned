@@ -22,9 +22,9 @@
 | artifacts/data/processed | dicionários e dados preparados | ignorado |
 | artifacts/tables | tabelas analíticas geradas | ignorado |
 | artifacts/images | figuras geradas | ignorado |
-| artifacts/models | futuros pacotes serializados | ignorado |
-| artifacts/metadata | futuras métricas e manifesto | ignorado |
-| artifacts/notebooks | investigação reproduzível | versionado sem saídas |
+| artifacts/models | `ModelBundle` serializado (`final_model.joblib`) | ignorado |
+| artifacts/metadata | métricas, registro do pré-processamento e manifesto | ignorado |
+| artifacts/notebooks | investigação reproduzível | versionado com saídas, para que os resultados possam ser lidos sem reexecução |
 
 A lógica reutilizável aprovada deve sair dos notebooks e ir para `src/regime_anomaly`.
 A documentação registra a metodologia estável e evidências preliminares, enquanto as

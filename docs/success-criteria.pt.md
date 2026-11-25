@@ -26,7 +26,8 @@
 ## Entrega
 
 - manter artefatos gerados ou pesados fora do Git;
-- reproduzir artefatos a partir dos notebooks ou do futuro pipeline;
+- reproduzir os artefatos a partir dos notebooks (`uv run invoke notebooks`) e
+  verificá-los com `uv run regime-analysis`;
 - construir o MkDocs em modo estrito;
 - manter o Streamlit somente leitura em relação ao treinamento;
 - manter testes aprovados e um manifesto de integridade antes da publicação final.

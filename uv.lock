@@ -2511,6 +2511,7 @@ dependencies = [
 [package.dev-dependencies]
 analysis = [
     { name = "ipykernel" },
+    { name = "nbconvert" },
 ]
 dev = [
     { name = "invoke" },
@@ -2553,7 +2554,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-analysis = [{ name = "ipykernel", specifier = ">=7.4.0" }]
+analysis = [
+    { name = "ipykernel", specifier = ">=7.4.0" },
+    { name = "nbconvert", specifier = ">=7.16" },
+]
 dev = [
     { name = "invoke", specifier = ">=3.0.3" },
     { name = "mypy", specifier = ">=2.4.1" },

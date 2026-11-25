@@ -19,15 +19,19 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 
 ## Estado atual
 
-- o EDA foi estruturado e documentado em `artifacts/notebooks/01_EDA.ipynb`;
-- o dicionário de dados, tabelas e imagens são gerados localmente em `artifacts/`;
-- K-Means e GMM são explorados com três grupos, sem usar os valores de `Load_Type`;
-- Isolation Forest é usado apenas como diagnóstico exploratório de anomalias;
-- a base do dashboard Streamlit foi criada para consumir resultados publicados e
-  apresentar monitoramento, alertas, qualidade dos modelos e relatórios;
-- preparação, comparação final, avaliação congelada e modelo de produção ainda estão pendentes.
-
-Resultados atuais são impressões exploratórias, não conclusões finais.
+- EDA (`01_EDA.ipynb`), pré-processamento (`02_preprocessing.ipynb` e
+  `02b_Preprocessing_Protocol.ipynb`) e modelagem (`03_Modeling.ipynb`) implementados e
+  executáveis em sequência;
+- modelo selecionado por protocolo fixado antes dos resultados: **K-Means com três
+  regimes** usando só variáveis elétricas — ocioso indutivo, ocioso capacitivo e produção;
+- **Isolation Forest** com limiar de 1% calibrado na validação; na v1.1, alertas em trocas de regime são suprimidos (49 → 5 alertas no teste);
+- avaliação final congelada em nov–dez; concordância com `Load_Type` é moderada
+  (ARI 0,34) porque `Load_Type` segue uma tabela tarifária por horário, não o estado
+  elétrico;
+- modelo, métricas, resultados e manifesto de integridade publicados em `artifacts/`;
+- decisões, nomes dos regimes e triagem dos alertas aguardam revisão da equipe; o material está em `04_Review.ipynb` e na página Team Review da documentação.
+- dashboard Streamlit de monitoramento (visão geral, monitoramento, alertas, modelos e
+  relatórios) lendo os resultados publicados, com página para testar o modelo em um CSV;
 
 ## Equipe
 
@@ -38,8 +42,11 @@ Resultados atuais são impressões exploratórias, não conclusões finais.
 ## Notebooks
 
 1. `01_EDA.ipynb`: qualidade, distribuições, relações, PCA, t-SNE e baselines não supervisionados;
-2. `02_preprocessing.ipynb`: preparação reproduzível, ainda em desenvolvimento;
-3. `03_Modeling.ipynb`: comparação e seleção final, ainda em desenvolvimento.
+2. `02_preprocessing.ipynb`: comparação exploratória de configurações de features (split 80/20, `Day_of_week`, PCA);
+   `02b_Preprocessing_Protocol.ipynb`: preparação usada pelo modelo — correção de timestamps, partição treino / validação / teste, conjuntos de features e transformações;
+3. `03_Modeling.ipynb`: protocolo, comparação de candidatos, anomalias, congelamento, avaliação no teste e publicação.
+4. `04_Review.ipynb`: material para revisão da equipe — registro de decisões, evidências dos regimes e planilha de triagem dos alertas;
+5. `05_Transition_Filter.ipynb`: filtro de alertas em trocas de regime (modelo v1.1).
 
 ## Artefatos e versionamento
 
@@ -53,27 +60,38 @@ Ao executar o EDA, são produzidos localmente:
 - tabelas exploratórias em `artifacts/tables/`;
 - gráficos PNG em `artifacts/images/`.
 
-O dashboard de monitoramento passará a consumir, quando publicados pelo pipeline:
+O dashboard de monitoramento consome o que os notebooks 03 a 05 publicam:
 
-- `artifacts/data/processed/analysis_results.csv`, com a série temporal enriquecida;
+- `artifacts/data/processed/analysis_results.csv`, com a série temporal enriquecida
+  (medições, `regime_name`, `anomaly_score`, `is_anomaly_raw`, `regime_boundary` e
+  `is_anomaly`);
 - `artifacts/metadata/final_metrics.json`, com métricas congeladas;
-- modelos e pré-processador serializados em `artifacts/models/`.
+- o modelo serializado em `artifacts/models/final_model.joblib`.
 
-O arquivo de resultados deverá conter, no mínimo, `timestamp` e as medições
-operacionais. Conforme os modelos forem consolidados, poderá incluir regime de carga
-supervisionado, perfil operacional não supervisionado, `anomaly_score`, estado e
-motivo do alerta.
+Os nomes de coluna publicados são convertidos para os nomes canônicos do dashboard em
+`src/regime_anomaly/dashboard.py` (`COLUMN_ALIASES`). Estado e motivo do alerta
+(`alert_severity`, `alert_reason`) ainda não são publicados; até lá, o dashboard marca
+como "Atenção" as leituras com `is_anomaly`.
 
 ## Ambiente e execução
 
 Requer Python 3.12 ou superior e [uv](https://docs.astral.sh/uv/).
 
+Antes de executar, baixe `Steel_industry_data.csv` da
+[UCI](https://archive.ics.uci.edu/dataset/851/steel+industry+energy+consumption) para
+`artifacts/data/raw/`. O projeto nunca baixa o arquivo automaticamente.
+
 ```bash
-uv sync --locked
+uv sync --locked --group analysis --group docs --group test
+uv run invoke notebooks          # executa 01 a 05 em ordem e regenera os artefatos
+uv run regime-analysis           # confere os artefatos contra o manifesto (SHA-256)
 uv run streamlit run src/app.py
-uv run --group docs invoke docs --build --strict
-uv run --group test pytest
+uv run invoke docs --build --strict
+uv run pytest
 ```
+
+Para retomar a partir de um notebook: `uv run invoke notebooks --start 03_Modeling`.
+O `requirements.txt` é exportado do `uv.lock` (`uv export`) para quem usa `pip`.
 
 A aplicação Streamlit apenas consome artefatos aprovados; treinamento não faz parte
 do processo web. Ela reproduz resultados históricos publicados como uma simulação de

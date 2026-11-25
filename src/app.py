@@ -8,6 +8,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from regime_anomaly.artifacts import ArtifactStore
 from regime_anomaly.dashboard import (
     DISPLAY_COLUMNS,
     RESULTS_PATH,
@@ -18,8 +19,10 @@ from regime_anomaly.dashboard import (
     available_measurements,
     load_metrics,
     load_results,
+    metrics_version,
     results_version,
 )
+from regime_anomaly.i18n import DEFAULT_LOCALE, translate
 
 st.set_page_config(page_title="Monitoramento de energia", page_icon="⚡", layout="wide")
 
@@ -181,7 +184,7 @@ def alerts(frame: pd.DataFrame) -> None:
 
 def models(_: pd.DataFrame) -> None:
     st.title("Modelos e qualidade")
-    metrics = cached_metrics(RESULTS_PATH.stat().st_mtime_ns if RESULTS_PATH.exists() else 0)
+    metrics = cached_metrics(metrics_version())
     if metrics:
         st.json(metrics)
     else:
@@ -257,6 +260,34 @@ def preprocessing(_: pd.DataFrame) -> None:
                     use_container_width=True)
 
 
+def test_model(_: pd.DataFrame) -> None:
+    """Run the published model on an uploaded CSV in the UCI layout (never retrains)."""
+    st.title(translate("model.title", DEFAULT_LOCALE))
+    available = artifact_status()["model"]
+    if not available:
+        st.warning(translate("model.unavailable", DEFAULT_LOCALE))
+    st.caption(translate("model.help", DEFAULT_LOCALE))
+    uploaded = st.file_uploader(
+        translate("model.upload", DEFAULT_LOCALE), type="csv", disabled=not available
+    )
+    if uploaded is None:
+        return
+    try:
+        prediction = ArtifactStore().model().predict(pd.read_csv(uploaded))
+    except (ValueError, KeyError, TypeError, NotImplementedError) as error:
+        st.error(translate("model.error", DEFAULT_LOCALE, error=error))
+        return
+    st.success(
+        translate(
+            "model.summary",
+            DEFAULT_LOCALE,
+            rows=len(prediction),
+            anomalies=int(prediction["is_anomaly"].sum()),
+        )
+    )
+    st.dataframe(prediction, width="stretch", hide_index=True)
+
+
 
 PAGES = {
     "Visão geral": overview,
@@ -265,6 +296,7 @@ PAGES = {
     "Modelos": models,
     "Preparação": preprocessing,
     "Relatórios": reports,
+    "Testar modelo": test_model,
 }
 st.sidebar.title("⚡ Steel Energy")
 st.sidebar.caption("Regimes operacionais e anomalias")

@@ -28,5 +28,9 @@ consumo de energia ativa, energia reativa atrasada e adiantada, CO2, fatores de 
 segundos desde a meia-noite, contexto de dia útil/fim de semana, dia da semana e tipo de
 carga.
 
-Um futuro manifesto deve registrar data de obtenção, tamanho em bytes, hash SHA-256,
-identificador UCI, DOI e licença.
+`artifacts/metadata/manifest.json` registra o tamanho do arquivo em bytes, o hash
+SHA-256, o identificador UCI, o DOI e a licença. A cópia de referência tem 2.731.389
+bytes e SHA-256
+`9b1cee6f9cb9cd9df2b95814ca90a9a2ff15b7f5f1fba0fae3c643e82072eacc`; o `uv run
+regime-analysis` informa `alterado` se uma cópia local for diferente. A data de obtenção
+não é registrada, porque o arquivo não foi versionado quando baixado pela primeira vez.

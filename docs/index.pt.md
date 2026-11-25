@@ -13,13 +13,15 @@ não é usado como variável de entrada nem como rótulo de treinamento.
 | EDA | implementada e documentada |
 | Dicionário de dados | gerado localmente |
 | Figuras e tabelas exploratórias | geradas localmente; excluídas do Git |
-| Notebook de preparação | implementado; seleção em revisão |
-| Comparação final de modelos | pendente |
-| Avaliação congelada | pendente |
-| Streamlit | estrutura somente leitura disponível |
+| Notebooks de preparação | implementados (02 e 02b); decisões aguardando aprovação da equipe |
+| Comparação final de modelos | concluída: K-Means, três regimes, apenas variáveis elétricas |
+| Avaliação congelada | concluída em novembro–dezembro |
+| Detector de anomalias | Isolation Forest com filtro de transição (modelo v1.1) |
+| Streamlit | painel de monitoramento sobre os resultados publicados; executa o modelo em arquivos CSV enviados |
 
-Os resultados atuais de agrupamento e anomalias são evidências exploratórias, não uma
-seleção final de modelo nem uma validação de negócio.
+O modelo está selecionado e avaliado, mas ainda não foi validado pelo negócio: os nomes
+dos regimes, a taxa de alertas e os próprios alertas aguardam revisão da planta e da
+operação (consulte [Revisão da equipe](team-review.md) e [Situação](status.md)).
 
 ## Fluxo de trabalho
 
@@ -29,7 +31,9 @@ seleção final de modelo nem uma validação de negócio.
 4. projetar o espaço de variáveis com PCA e t-SNE;
 5. inspecionar baselines de K-Means e GMM com três regimes;
 6. inspecionar sinais de anomalia do Isolation Forest;
-7. levar decisões aprovadas para preparação, modelagem e avaliação.
+7. levar decisões aprovadas para preparação, modelagem e avaliação;
+8. revisar regimes e alertas com a equipe e aplicar o filtro de transição.
 
-Consulte [Descobertas iniciais](initial-findings.md) para ver as evidências disponíveis.
+Consulte [Descobertas iniciais](initial-findings.md) para ver as evidências exploratórias,
+e [Modelagem](modeling.md) e [Avaliação](evaluation.md) para os resultados finais.
 Consulte [Referências técnicas](references.md) para as bibliotecas, APIs e fontes oficiais.

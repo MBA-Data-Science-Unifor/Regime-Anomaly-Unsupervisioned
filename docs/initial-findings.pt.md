@@ -74,6 +74,9 @@ O Isolation Forest sinaliza 701 observações sob uma taxa de contaminação pre
 
 ## Próximas verificações
 
+Essas verificações foram tratadas em [Preparação dos dados](data-preparation.md),
+[Modelagem](modeling.md) e [Avaliação](evaluation.md).
+
 - reproduzir a preparação fora do notebook de EDA;
 - medir a estabilidade dos grupos com reamostragens e divisões temporais;
 - testar a sensibilidade a grupos de variáveis e transformações;

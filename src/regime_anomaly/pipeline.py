@@ -1,36 +1,38 @@
-"""Artifact publication scaffold; modelling will be implemented after the notebooks."""
+"""Artifact contract and integrity check (``regime-analysis``).
+
+Training and publication happen in the notebooks; this command never fits or rewrites
+anything. It creates the artifact folders and compares published files with the
+SHA-256 hashes in ``metadata/manifest.json``.
+"""
 
 from __future__ import annotations
 
-import json
+import sys
+from collections import Counter
 
 from pathlib import Path
 from .data import LABEL_COLUMN
+from .artifacts import MANIFEST, verify_manifest
 from .config import ARTIFACTS, MODELS_DIR, PROCESSED_DIR, RAW_DIR, ensure_artifact_dirs, load_data, METADATA_DIR
-from .preprocessing import FEATURE_CONFIGS, split_columns, build_preprocessor, FEATURE_DELETED, FEATURE_CATEGORICAL, FEATURE_NUMERIC, FEATURE_REPORTED
+from .preprocessing import FEATURE_CONFIGS, FEATURE_DELETED, FEATURE_CATEGORICAL, FEATURE_NUMERIC, FEATURE_REPORTED, split_columns, build_preprocessor
 import pandas as pd
 import numpy as np
 import joblib
+import json
 
 ARTIFACT_CONTRACT = {
     "raw_data": "data/raw/Steel_industry_data.csv",
+    "prepared_data": "data/processed/prepared_dataset.csv",
     "processed_data": "data/processed/analysis_results.csv",
     "model": "models/final_model.joblib",
     "metrics": "metadata/final_metrics.json",
+    "preprocessing": "metadata/preprocessing.json",
     "manifest": "metadata/manifest.json",
     "tables": "tables/*.csv",
     "images": "images/*.png",
     "preprocessor_data": "metadata/preprocessed_data.json",
-    "preprocessor": "models/preprocessor.joblib"
+    "preprocessor": "models/preprocessor.joblib",
 }
-
-
-def main() -> None:
-    """Create directories and show the future publication contract without training."""
-    ensure_artifact_dirs()
-    print(f"Estrutura preparada em: {ARTIFACTS}")
-    print(json.dumps(ARTIFACT_CONTRACT, ensure_ascii=False, indent=2))
-    print("Nenhuma análise ou modelagem foi executada.")
 
 
 def run_preprocessing():
@@ -83,5 +85,31 @@ def run_preprocessing():
     (METADATA_DIR / "preprocessed_data.json").write_text(
         json.dumps(feature_data, indent=2, ensure_ascii=False), encoding="utf-8"
     )
+
+
+def main() -> int:
+    """Print the integrity status of published artifacts; exit 1 if any differs."""
+    ensure_artifact_dirs()
+    print(f"Artefatos em: {ARTIFACTS}")
+    if not (ARTIFACTS / MANIFEST).exists():
+        print("Manifesto ausente: execute os notebooks 01 a 05 para publicar os artefatos.")
+        return 0
+    status = verify_manifest(ARTIFACTS)
+    for relative, state in status.items():
+        if state != "ok":
+            print(f"  {state:<15} {relative}")
+    counts = Counter(status.values())
+    print(", ".join(f"{state}: {count}" for state, count in sorted(counts.items())))
+    problems = counts["alterado"] + counts["ausente"]
+    if problems:
+        print("Artefatos divergem do manifesto: reexecute os notebooks 03 a 05.")
+        return 1
+    print("Todos os artefatos registrados conferem com o manifesto.")
+    return 0
+
+
+
+
+
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -22,12 +22,14 @@
 | Stage | Evidence | State |
 | --- | --- | --- |
 | EDA | dictionary, figures, tables, hypotheses | review in progress |
-| Preparation | fitted, leakage-safe transformations | pending |
-| Modeling | reproducible comparison and stability | pending |
-| Evaluation | frozen metrics and external assessment | pending |
-| Publication | manifest, final model, application | pending |
+| Preparation | fitted, leakage-safe transformations | done; awaiting team approval |
+| Modeling | reproducible comparison and stability | done |
+| Evaluation | frozen metrics and external assessment | done |
+| Publication | manifest, final model, application | done (model v1.1) |
+| Team review | decisions, regime names, alert triage | waiting on people |
 
 ## Reflection
 
-The current EDA supports continued investigation of three regimes, but it does not
-validate class correspondence, causal explanations, or production thresholds.
+Three regimes are stable (bootstrap ARI 0.999) and electrically interpretable, but they
+describe the plant's electrical state rather than the Load_Type tariff schedule. Regime
+names, causal explanations and the alert rate still need plant and operations input.

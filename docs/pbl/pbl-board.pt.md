@@ -22,12 +22,15 @@
 | Etapa | Evidência | Situação |
 | --- | --- | --- |
 | EDA | dicionário, figuras, tabelas, hipóteses | revisão em andamento |
-| Preparação | transformações ajustadas e seguras contra vazamento | pendente |
-| Modelagem | comparação reproduzível e estabilidade | pendente |
-| Avaliação | métricas congeladas e avaliação externa | pendente |
-| Publicação | manifesto, modelo final, aplicação | pendente |
+| Preparação | transformações ajustadas e seguras contra vazamento | concluída; aguardando aprovação da equipe |
+| Modelagem | comparação reproduzível e estabilidade | concluída |
+| Avaliação | métricas congeladas e avaliação externa | concluída |
+| Publicação | manifesto, modelo final, aplicação | concluída (modelo v1.1) |
+| Revisão da equipe | decisões, nomes dos regimes, triagem de alertas | aguardando pessoas |
 
 ## Reflexão
 
-A EDA atual apoia a continuidade da investigação de três regimes, mas não valida a
-correspondência entre classes, explicações causais ou limiares de produção.
+Os três regimes são estáveis (ARI de bootstrap 0,999) e eletricamente interpretáveis,
+mas descrevem o estado elétrico da planta, e não a tabela horária de tarifa de
+`Load_Type`. Os nomes dos regimes, as explicações causais e a taxa de alertas ainda
+precisam da contribuição da planta e da operação.
