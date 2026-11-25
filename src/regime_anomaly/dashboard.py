@@ -5,12 +5,10 @@ from __future__ import annotations
 import json
 
 import pandas as pd
-
-from .config import ARTIFACTS
+from .config import ARTIFACTS, PREPROCESSING_PATH
 
 RESULTS_PATH = ARTIFACTS / "data" / "processed" / "analysis_results.csv"
 METRICS_PATH = ARTIFACTS / "metadata" / "final_metrics.json"
-PREPROCESSING_PATH = ARTIFACTS / "metadata" / "preprocessed_data.json"
 
 
 # Accept original UCI names during the transition; publish canonical names later.

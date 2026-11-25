@@ -10,6 +10,7 @@ TABLES_DIR = ARTIFACTS / "tables"
 IMAGES_DIR = ARTIFACTS / "images"
 MODELS_DIR = ARTIFACTS / "models"
 METADATA_DIR = ARTIFACTS / "metadata"
+PREPROCESSING_PATH = ARTIFACTS / "metadata" / "preprocessed_data.json"
 
 RANDOM_STATE = 42
 
