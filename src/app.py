@@ -238,8 +238,10 @@ def preprocessing(_: pd.DataFrame) -> None:
     cards[1].metric("Linhas de teste", meta["n_test"])
     cards[2].metric("Componentes PCA", len(meta["pca_components"]))
 
-    st.write(f"Divisão temporal: treino de {meta['train_date_range'][0][:10]} "
-             f"a {meta['train_date_range'][1][:10]}; teste até {meta['test_date_range'][1][:10]}.")
+    st.write(
+        f"Divisão temporal: treino de {meta['train_date_range'][0][:10]} "
+        f"a {meta['train_date_range'][1][:10]}; teste até {meta['test_date_range'][1][:10]}."
+    )
 
     left, right = st.columns(2)
     with left:
@@ -252,12 +254,15 @@ def preprocessing(_: pd.DataFrame) -> None:
         st.write("Removidas:", ", ".join(meta["feature_deleted"]))
 
     st.subheader("Variância explicada pelo PCA")
-    pca = pd.DataFrame({
-        "Componente": meta["pca_components"],
-        "Variância acumulada (%)": [round(v * 100, 1) for v in meta["cumulative_variance"]],
-    })
-    st.plotly_chart(px.bar(pca, x="Componente", y="Variância acumulada (%)"),
-                    use_container_width=True)
+    pca = pd.DataFrame(
+        {
+            "Componente": meta["pca_components"],
+            "Variância acumulada (%)": [round(v * 100, 1) for v in meta["cumulative_variance"]],
+        }
+    )
+    st.plotly_chart(
+        px.bar(pca, x="Componente", y="Variância acumulada (%)"), use_container_width=True
+    )
 
 
 def test_model(_: pd.DataFrame) -> None:
@@ -286,7 +291,6 @@ def test_model(_: pd.DataFrame) -> None:
         )
     )
     st.dataframe(prediction, width="stretch", hide_index=True)
-
 
 
 PAGES = {

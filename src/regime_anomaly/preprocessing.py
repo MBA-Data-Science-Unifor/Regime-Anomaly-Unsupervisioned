@@ -308,11 +308,9 @@ FEATURE_CONFIGS = {
     "Base + hora": (FEATURE_NUMERIC + FEATURE_HOUR, None),
     "Base + mês": (FEATURE_NUMERIC + FEATURE_MONTH, None),
     "Base + hora + mês": (FEATURE_NUMERIC + FEATURE_HOUR + FEATURE_MONTH, None),
-    "Base + Day_of_week": (FEATURE_NUMERIC + ['Day_of_week'], None),
-    "Base + Day_of_week + PCA90": (FEATURE_NUMERIC + ['Day_of_week'], 0.9)
+    "Base + Day_of_week": (FEATURE_NUMERIC + ["Day_of_week"], None),
+    "Base + Day_of_week + PCA90": (FEATURE_NUMERIC + ["Day_of_week"], 0.9),
 }
-
-
 
 
 def time_feature_adapt(data: pd.DataFrame) -> pd.DataFrame:
@@ -396,15 +394,17 @@ def describe_preprocessor(pipeline: Pipeline) -> dict[str, object]:
 
 
 def evaluate_config(cols: list[str], X, y, pca: float | None) -> tuple[float, float]:
-    """ 
+    """
     Além de Pre-Processar os dados, treina o K-Means e
     avalia os resultados por meio das métricas Silhouette e ARI
     """
     numeric, categorical = split_columns(cols)
-    pipeline = build_preprocessor(numeric_cols=numeric, categorical_cols=categorical, pca_variance=pca)
+    pipeline = build_preprocessor(
+        numeric_cols=numeric, categorical_cols=categorical, pca_variance=pca
+    )
 
     X_prep = pipeline.fit_transform(X)
-    
+
     km = KMeans(n_clusters=3, random_state=42, n_init=10).fit(X_prep)
     silhouette_scalled = silhouette_score(X_prep, km.labels_)
     ari_score = adjusted_rand_score(y, km.labels_)

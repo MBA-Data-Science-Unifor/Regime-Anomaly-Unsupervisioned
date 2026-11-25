@@ -13,8 +13,23 @@ from collections import Counter
 from pathlib import Path
 from .data import LABEL_COLUMN, load_data
 from .artifacts import MANIFEST, verify_manifest
-from .config import ARTIFACTS, MODELS_DIR, PROCESSED_DIR, RAW_DIR, ensure_artifact_dirs, METADATA_DIR
-from .preprocessing import FEATURE_CONFIGS, FEATURE_DELETED, FEATURE_CATEGORICAL, FEATURE_NUMERIC, FEATURE_REPORTED, split_columns, build_preprocessor
+from .config import (
+    ARTIFACTS,
+    MODELS_DIR,
+    PROCESSED_DIR,
+    RAW_DIR,
+    ensure_artifact_dirs,
+    METADATA_DIR,
+)
+from .preprocessing import (
+    FEATURE_CONFIGS,
+    FEATURE_DELETED,
+    FEATURE_CATEGORICAL,
+    FEATURE_NUMERIC,
+    FEATURE_REPORTED,
+    split_columns,
+    build_preprocessor,
+)
 import pandas as pd
 import numpy as np
 import joblib
@@ -42,7 +57,7 @@ def run_preprocessing():
     df = df.sort_values("date").reset_index(drop=True)
 
     X, y = df.drop(columns=[LABEL_COLUMN]), df[LABEL_COLUMN]
-    cut = int(len(df) * 0.8)                       # split temporal 80/20
+    cut = int(len(df) * 0.8)  # split temporal 80/20
     X_train, X_test = X.iloc[:cut].copy(), X.iloc[cut:].copy()
     y_train, y_test = y.iloc[:cut].copy(), y.iloc[cut:].copy()
 
@@ -52,7 +67,7 @@ def run_preprocessing():
     numeric, categorical = split_columns(cols)
     pipeline = build_preprocessor(numeric, categorical, pca_variance)
 
-    X_train_p = pipeline.fit_transform(X_train)    # fit só no treino
+    X_train_p = pipeline.fit_transform(X_train)  # fit só no treino
     X_test_p = pipeline.transform(X_test)
 
     np.save(PROCESSED_DIR / "x_train.npy", X_train_p)
@@ -77,9 +92,9 @@ def run_preprocessing():
         "n_rows_total": int(len(df)),
         "n_train": int(len(X_train)),
         "n_test": int(len(X_test)),
-        "pca_components": [f"PC{i+1}" for i in range(X_train_p.shape[1])],
+        "pca_components": [f"PC{i + 1}" for i in range(X_train_p.shape[1])],
         "train_date_range": [str(X_train["date"].min()), str(X_train["date"].max())],
-        "test_date_range":  [str(X_test["date"].min()),  str(X_test["date"].max())],
+        "test_date_range": [str(X_test["date"].min()), str(X_test["date"].max())],
     }
 
     (METADATA_DIR / "preprocessed_data.json").write_text(
@@ -106,9 +121,6 @@ def main() -> int:
         return 1
     print("Todos os artefatos registrados conferem com o manifesto.")
     return 0
-
-
-
 
 
 if __name__ == "__main__":
