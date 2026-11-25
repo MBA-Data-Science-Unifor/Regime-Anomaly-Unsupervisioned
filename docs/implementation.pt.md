@@ -29,7 +29,7 @@ suporte à investigação operacional, não diagnóstico de falha ou previsão d
 ## Execução
 
     uv sync --locked --group analysis --group docs --group test
-    uv run invoke notebooks                 # 01 a 05 em ordem; --start 03_Modeling para retomar
+    uv run invoke notebooks                 # 01 a 04 em ordem; --start 03_Modeling para retomar
     uv run regime-analysis                  # compara os artefatos com o manifesto
     uv run streamlit run src/app.py
     uv run invoke docs --build --strict

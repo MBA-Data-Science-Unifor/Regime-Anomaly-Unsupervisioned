@@ -14,7 +14,7 @@ supervisionada futura de `Load_Type` será uma tarefa separada e complementar.
 | EDA | implementada e documentada |
 | Dicionário de dados | gerado localmente |
 | Figuras e tabelas exploratórias | geradas localmente; excluídas do Git |
-| Notebooks de preparação | implementados (02 e 02b); decisões aguardando aprovação da equipe |
+| Notebook de preparação | implementado como 02; decisões aguardando aprovação da equipe |
 | Comparação final de modelos | concluída: K-Means, três regimes, apenas variáveis elétricas |
 | Avaliação congelada | concluída em novembro–dezembro |
 | Detector de anomalias | Isolation Forest com filtro de transição (modelo v1.1) |

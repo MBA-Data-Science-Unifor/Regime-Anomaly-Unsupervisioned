@@ -28,7 +28,7 @@ operational investigation and are not fault diagnoses or maintenance predictions
 ## Execution
 
     uv sync --locked --group analysis --group docs --group test
-    uv run invoke notebooks                 # 01 to 05 in order; --start 03_Modeling to resume
+    uv run invoke notebooks                 # 01 to 04 in order; --start 03_Modeling to resume
     uv run regime-analysis                  # compare artifacts with the manifest
     uv run streamlit run src/app.py
     uv run invoke docs --build --strict

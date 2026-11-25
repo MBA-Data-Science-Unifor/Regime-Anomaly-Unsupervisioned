@@ -1,19 +1,13 @@
 # Preparação dos Dados
 
-A preparação está em dois notebooks que compartilham
-`src/regime_anomaly/preprocessing.py`:
-
-- `artifacts/notebooks/02_preprocessing.ipynb` — comparação exploratória de
-  configurações de variáveis (divisão temporal 80/20, one-hot de `Day_of_week`, PCA
-  opcional);
-- `artifacts/notebooks/02b_Preprocessing_Protocol.ipynb` — a preparação usada pelo
-  modelo publicado (notebooks 03–05), descrita abaixo.
+A preparação está documentada em `artifacts/notebooks/02_Preprocessing.ipynb`. Ele resume a comparação exploratória de variáveis e registra o protocolo usado pelo modelo publicado (notebooks 03–04); as duas partes compartilham `src/regime_anomaly/preprocessing.py`.
 
 !!! warning "Decisões propostas"
     As escolhas abaixo são propostas baseadas em evidências que aguardam aprovação da
-    equipe. Os dois notebooks chegam à mesma conclusão sobre as entradas de calendário:
-    apenas as variáveis elétricas produzem a maior silhueta (0,636 no notebook 02; 0,82
-    na validação no 02b).
+    equipe. A comparação exploratória e o protocolo publicado chegam à mesma conclusão:
+    apenas as variáveis elétricas formam o conjunto principal de regimes. A silhueta
+    final do K-Means na validação é 0,823; o resultado exploratório 80/20 (0,636) é
+    contexto, não critério de publicação.
 
 ## Pipeline
 
@@ -82,4 +76,5 @@ e os armazena junto com o modelo final.
 - o kVarh adiantado e o fator de potência adiantado mantêm grande massa no seu limite
   (0 / 100%); testar um indicador binário de "no limite";
 - redundância do par kVarh adiantado × fator de potência adiantado (Spearman ≈ −0,97);
-- calibração do limiar de anomalia na validação em vez de uma contaminação fixa de 2%.
+- se uma premissa operacional de taxa de alertas diferente deve substituir o limiar de
+  1% calibrado na validação.

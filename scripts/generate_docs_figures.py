@@ -143,7 +143,7 @@ def kmeans_figure() -> None:
 
 
 def preprocessing_figure() -> None:
-    output = notebook_output(NOTEBOOKS / "02_preprocessing.ipynb", 13)
+    output = notebook_output(NOTEBOOKS / "02_Preprocessing.ipynb", 14)
     matches = re.findall(
         r"Name:\s*(.*?)\s*\|\s*Silhouette:\s*([0-9.]+)\|\s*ARI:\s*([0-9.]+)",
         output,

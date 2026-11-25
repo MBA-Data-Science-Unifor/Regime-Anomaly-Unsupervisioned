@@ -19,8 +19,7 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 
 ## Estado atual
 
-- EDA (`01_EDA.ipynb`), pré-processamento (`02_preprocessing.ipynb` e
-  `02b_Preprocessing_Protocol.ipynb`) e modelagem (`03_Modeling.ipynb`) implementados e
+- EDA (`01_EDA.ipynb`), pré-processamento (`02_Preprocessing.ipynb`) e modelagem (`03_Modeling.ipynb`) implementados e
   executáveis em sequência;
 - modelo selecionado por protocolo fixado antes dos resultados: **K-Means com três
   regimes** usando só variáveis elétricas — ocioso indutivo, ocioso capacitivo e produção;
@@ -42,11 +41,9 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 ## Notebooks
 
 1. `01_EDA.ipynb`: qualidade, distribuições, relações, PCA, t-SNE e baselines não supervisionados;
-2. `02_preprocessing.ipynb`: comparação exploratória de configurações de features (split 80/20, `Day_of_week`, PCA);
-   `02b_Preprocessing_Protocol.ipynb`: preparação usada pelo modelo — correção de timestamps, partição treino / validação / teste, conjuntos de features e transformações;
-3. `03_Modeling.ipynb`: protocolo, comparação de candidatos, anomalias, congelamento, avaliação no teste e publicação.
+2. `02_Preprocessing.ipynb`: síntese da comparação exploratória e protocolo publicado — correção de timestamps, partição treino / validação / teste, conjuntos de features e transformações;
+3. `03_Modeling.ipynb`: protocolo, comparação de candidatos, anomalias, avaliação no teste, filtro de transições v1.1 e publicação.
 4. `04_Review.ipynb`: material para revisão da equipe — registro de decisões, evidências dos regimes e planilha de triagem dos alertas;
-5. `05_Transition_Filter.ipynb`: filtro de alertas em trocas de regime (modelo v1.1).
 
 ## Artefatos e versionamento
 
@@ -60,7 +57,7 @@ Ao executar o EDA, são produzidos localmente:
 - tabelas exploratórias em `artifacts/tables/`;
 - gráficos PNG em `artifacts/images/`.
 
-O dashboard de monitoramento consome o que os notebooks 03 a 05 publicam:
+O dashboard de monitoramento consome o que o notebook 03 publica e o notebook 04 revisa:
 
 - `artifacts/data/processed/analysis_results.csv`, com a série temporal enriquecida
   (medições, `regime_name`, `anomaly_score`, `is_anomaly_raw`, `regime_boundary` e
@@ -83,7 +80,7 @@ Antes de executar, baixe `Steel_industry_data.csv` da
 
 ```bash
 uv sync --locked --group analysis --group docs --group test
-uv run invoke notebooks          # executa 01 a 05 em ordem e regenera os artefatos
+uv run invoke notebooks          # executa 01 a 04 em ordem e regenera os artefatos
 uv run regime-analysis           # confere os artefatos contra o manifesto (SHA-256)
 uv run streamlit run src/app.py
 uv run invoke docs --build --strict

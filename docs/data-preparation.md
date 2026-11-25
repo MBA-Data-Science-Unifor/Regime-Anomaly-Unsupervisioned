@@ -1,16 +1,13 @@
 # Data Preparation
 
-Preparation lives in two notebooks that share `src/regime_anomaly/preprocessing.py`:
-
-- `artifacts/notebooks/02_preprocessing.ipynb` — exploratory comparison of feature
-  configurations (80/20 temporal split, one-hot `Day_of_week`, optional PCA);
-- `artifacts/notebooks/02b_Preprocessing_Protocol.ipynb` — the preparation used by the
-  published model (notebooks 03–05), described below.
+Preparation is documented in `artifacts/notebooks/02_Preprocessing.ipynb`. It summarizes the exploratory feature comparison and records the protocol used by the published model (notebooks 03–04); both parts share `src/regime_anomaly/preprocessing.py`.
 
 !!! warning "Proposed decisions"
     The choices below are evidence-based proposals pending team approval. The two
-    notebooks reach the same conclusion on calendar inputs: electrical variables alone
-    give the highest silhouette (0.636 in notebook 02, 0.82 on validation in 02b).
+    exploratory comparison and the published protocol point to the same conclusion:
+    electrical variables alone form the primary regime feature set. The final K-Means
+    validation silhouette is 0.823; the exploratory 80/20 result (0.636) is context,
+    not the publication criterion.
 
 ## Pipeline
 
@@ -74,4 +71,5 @@ preparation; notebook 03 refits them on train and stores them with the final mod
 - leading kVarh and leading power factor keep a large mass at their limit (0 / 100%);
   test a binary "at limit" indicator;
 - redundancy of the leading kVarh × leading power-factor pair (Spearman ≈ −0.97);
-- anomaly threshold calibration on validation instead of a fixed 2% contamination.
+- whether a different operational alert-rate assumption should replace the 1% threshold
+  calibrated on validation.

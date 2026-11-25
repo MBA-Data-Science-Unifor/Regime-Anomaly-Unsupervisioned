@@ -17,22 +17,13 @@ As participações dos regimes permanecem próximas entre os períodos: ocioso i
 38% / 42% / 41%, ocioso capacitivo 24% / 21% / 24%, produção 38% / 37% / 34%
 (treino / validação / teste).
 
-<<<<<<< HEAD
 ## Evidências de anomalias
-=======
-- verossimilhança do GMM, diagnósticos AIC/BIC e incerteza da atribuição;
-- distribuição dos escores do Isolation Forest e sensibilidade à contaminação;
-- estabilidade do conjunto de anomalias mais bem classificadas;
-- revisão por janela temporal e contexto operacional.
-- distribuição dos sinais por perfil não supervisionado, hora e tipo de dia;
-- comparação entre baseline global e detector contextual, incluindo persistência dos alertas.
->>>>>>> branch_alex
 
-- o top 1% da validação se sobrepõe em 87%, em média, entre cinco sementes (Jaccard);
+- o limiar do Isolation Forest é 0,6247: percentil 99 dos escores da validação;
+- o top 1% da validação se sobrepõe em 87%, em média, entre cinco sementes (Jaccard),
+  sustentando a reprodutibilidade dos sinais mais bem classificados;
 - cerca de 40% dos alertas da validação se repetem no mesmo dia da semana e horário em
-  três ou mais semanas (por exemplo, domingo às 08:45 todas as semanas). É mais provável
-  que sejam eventos programados do que falhas, e eles devem ser revisados com a operação
-  da planta;
+  três ou mais semanas; recorrência é contexto operacional, não prova de falha;
 - a taxa de 1% é uma premissa operacional: não há rótulos de falha para estimá-la.
 
 ## Concordância externa com `Load_Type`
@@ -61,7 +52,7 @@ o limiar, equalizar taxas entre classes nem transformar um alerta em falha confi
 
 ## Filtro de transição (modelo v1.1)
 
-O notebook 05 suprime os alertas nas fronteiras de regime, mantendo o limiar da v1.0. A
+A seção 10 do notebook 03 suprime os alertas nas fronteiras de regime, mantendo o limiar da v1.0. A
 regra de decisão exigia que os alertas de fronteira fossem pelo menos 3× a participação
 das leituras de fronteira na validação; o aumento observado foi de 9,5×. A regra foi
 escrita depois de o notebook 04 já ter mostrado que 88% dos alertas da validação (90% no
@@ -89,7 +80,7 @@ atrasado em 15 minutos, porque uma fronteira precisa da leitura seguinte.
 ## Salvaguardas respeitadas
 
 - `Load_Type` nunca entrou em um ajuste e foi usado para concordância somente após o
-  congelamento. Foi inspecionado apenas no treino, no notebook 02b, e essa inspeção
+  congelamento. Foi inspecionado apenas no treino, no notebook 02, e essa inspeção
   definiu uma escolha de desenho: excluir o calendário das variáveis de regime (D3). É
   um uso deliberado e declarado do rótulo antes do congelamento;
 - o limiar de anomalia foi escolhido na validação e relatado no teste;

@@ -6,15 +6,17 @@ and Streamlit.
 | Path | Purpose |
 | --- | --- |
 | `data/raw/` | local UCI CSV; never modified by notebooks |
-| `data/processed/` | generated dictionaries and future prepared datasets |
-| `tables/` | generated exploratory summaries and future evaluation tables |
+| `data/processed/` | generated data dictionary, prepared dataset, and published analysis results |
+| `tables/` | generated exploratory, modeling, and review summaries |
 | `images/` | generated PNG figures |
-| `models/` | future serialized preprocessing and final model |
-| `metadata/` | future metrics, hashes, parameters, and manifest |
+| `models/` | serialized `final_model.joblib` (`ModelBundle`) |
+| `metadata/` | preprocessing metadata, final metrics, hashes, parameters, and manifest |
 
 The current raw source is `data/raw/Steel_industry_data.csv`. Generated contents and
 local raw data are intentionally ignored by Git; only directory placeholders are kept.
-Run the notebooks or the future pipeline to reproduce them.
+Run notebooks 01–04 to reproduce them. Notebook 03 is the publication step: it writes
+the final model, metrics, results, and integrity manifest; notebook 04 only reviews
+those approved artifacts.
 
 Do not train models from Streamlit. The application must consume approved artifacts
 read-only and remain usable when optional artifacts are absent.

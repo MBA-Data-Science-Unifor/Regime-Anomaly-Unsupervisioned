@@ -91,7 +91,7 @@ Once filled, the detector's precision can be measured for the first time.
 
 ## Transition filter (applied in v1.1)
 
-Notebook 05 applied the boundary filter: 59 → 7 validation alerts and 49 → 5 test
+Section 10 of notebook 03 applies the boundary filter: 59 → 7 validation alerts and 49 → 5 test
 alerts. The triage sheet keeps all 579 unfiltered alerts so operations can still confirm
 that transitions are of no interest; if they are, republish with
 `transition_filter=False`.

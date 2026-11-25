@@ -77,11 +77,11 @@ detector error. It indicates that a global score can conflate distinct operating
 and motivates a future comparison with contextual detection by unsupervised profile, hour,
 and day type.
 
-![Isolation Forest signal rate by reference regime](assets/images/isolation-forest-target-tracking.png)
+The corresponding post-hoc figure is intentionally kept as a local generated artifact;
+the published conclusions are recorded in [Evaluation](evaluation.md).
 
-*Figure 5 — Post-hoc distribution of signals by `Load_Type`, which remains outside
-training. The dashed line is the configured overall rate of approximately 2%; the chart
-describes alert concentration, not confirmed failure incidence.*
+The post-hoc distribution stays outside training and describes alert concentration, not
+confirmed failure incidence.
 
 ## Next checks
 
@@ -100,8 +100,8 @@ These checks were addressed in [Data Preparation](data-preparation.md),
 | Notebook | Evidence currently available | Interpretation status |
 | --- | --- | --- |
 | `01_EDA.ipynb` | data audit, distributions, calendar profiles, correlations, PCA/t-SNE, K-Means, GMM, and Isolation Forest | exploratory |
-| `02_preprocessing.ipynb` | temporal split, feature configurations, fitted preprocessing, PCA, cluster stability, and exported artifacts | experimental; selection not frozen |
-| `03_Modeling.ipynb` | reserved structure and TODO | no model result yet |
+| `02_Preprocessing.ipynb` | exploratory comparison summary, published temporal protocol, fitted preprocessing, and exported artifacts | protocol documented; decisions pending team approval |
+| `03_Modeling.ipynb` | candidate comparison, final evaluation, anomaly detection, and transition filter v1.1 | published model result |
 
 The stored EDA execution also reports no duplicated timestamps, a constant 15-minute
 interval, and recurring activity peaks around 9–11 a.m. and 2–5 p.m. Weekday medians
@@ -111,7 +111,7 @@ causal explanations.
 
 ## Preprocessing notebook impressions
 
-The stored execution of `02_preprocessing.ipynb` uses a chronological 80/20 split:
+The exploratory summary in `02_Preprocessing.ipynb` records the earlier chronological 80/20 split:
 training runs from 2018-01-01 through 2018-10-19, and testing runs from 2018-10-20
 through 2018-12-31.
 
@@ -138,16 +138,16 @@ from 0.000 to 0.031 tCO2, while mean leading power factor varies from approximat
 38.716 to 99.991. This supports post-fit interpretation, but does not establish causal or
 business validity.
 
-!!! caution "Selection remains open"
-    The numeric baseline has a higher silhouette than the PCA configuration selected in
-    the notebook. Hour and month features also leave the stored baseline scores unchanged.
-    The final choice therefore needs a documented multi-criterion rationale and a check
-    that every candidate actually received the intended feature columns. ARI is reported
-    only as external diagnostic evidence and must not drive unsupervised fitting.
+!!! note "Historical exploratory comparison"
+    These 80/20 scores document the earlier exploration only. The published selection
+    uses notebook 03's chronological train/validation/test protocol: K-Means on
+    electrical features obtains validation silhouette 0.823 and bootstrap ARI 0.999.
 
-## Modeling notebook status
+## Published modeling result
 
-`03_Modeling.ipynb` explicitly states that it has no results in the current version. No
-final-model performance, production threshold, or frozen external evaluation should be
-inferred from the EDA or preprocessing notebooks.
+`03_Modeling.ipynb` selects K-Means on electrical features, calibrates the Isolation
+Forest on validation, evaluates the frozen November–December test period, and publishes
+model v1.1. Test silhouette is 0.768; the transition filter reduces test alerts from 49
+to 5 while preserving `is_anomaly_raw` for audit. See [Modeling](modeling.md) and
+[Evaluation](evaluation.md) for the complete protocol.
 

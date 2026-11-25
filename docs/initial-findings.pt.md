@@ -79,11 +79,11 @@ indica que um score global pode confundir contextos operacionais distintos e mot
 comparação futura com uma detecção contextual por perfil não supervisionado, hora e tipo
 de dia.
 
-![Taxa de sinalização do Isolation Forest por regime de referência](assets/images/isolation-forest-target-tracking.png)
+A figura pós-hoc correspondente permanece como artefato local gerado; as conclusões
+publicadas estão registradas em [Avaliação](evaluation.md).
 
-*Figura 5 — Distribuição pós-hoc dos sinais por `Load_Type`, que permaneceu fora do
-treinamento. A linha tracejada é a taxa total configurada de aproximadamente 2%; o gráfico
-descreve concentração de alertas, não incidência comprovada de falhas.*
+A distribuição pós-hoc permanece fora do treinamento e descreve concentração de alertas,
+não incidência comprovada de falhas.
 
 ## Próximas verificações
 
@@ -102,8 +102,8 @@ Essas verificações foram tratadas em [Preparação dos dados](data-preparation
 | Notebook | Evidência disponível atualmente | Situação da interpretação |
 | --- | --- | --- |
 | `01_EDA.ipynb` | auditoria dos dados, distribuições, perfis de calendário, correlações, PCA/t-SNE, K-Means, GMM e Isolation Forest | exploratória |
-| `02_preprocessing.ipynb` | divisão temporal, configurações de variáveis, pré-processamento ajustado, PCA, estabilidade dos grupos e artefatos exportados | experimental; seleção não congelada |
-| `03_Modeling.ipynb` | estrutura reservada e TODO | ainda sem resultado de modelo |
+| `02_Preprocessing.ipynb` | síntese exploratória, protocolo temporal publicado, pré-processamento ajustado e artefatos exportados | protocolo documentado; decisões pendentes de aprovação da equipe |
+| `03_Modeling.ipynb` | comparação de candidatos, avaliação final, anomalias e filtro de transições v1.1 | resultado de modelo publicado |
 
 A execução armazenada da EDA também informa ausência de timestamps duplicados, intervalo
 constante de 15 minutos e picos recorrentes de atividade aproximadamente entre 9h–11h e
@@ -113,7 +113,7 @@ operacionais descritivos, não explicações causais.
 
 ## Impressões do notebook de pré-processamento
 
-A execução armazenada de `02_preprocessing.ipynb` usa uma divisão cronológica 80/20: o
+A síntese exploratória em `02_Preprocessing.ipynb` registra a divisão cronológica 80/20 anterior: o
 treinamento vai de 01/01/2018 a 19/10/2018 e o teste vai de 20/10/2018 a 31/12/2018.
 
 | Configuração de variáveis | Silhueta | ARI contra as categorias externas |
@@ -139,16 +139,15 @@ varia de 0,000 a 0,031 tCO2, enquanto a média do fator de potência adiantado v
 aproximadamente 38,716 a 99,991. Isso apoia a interpretação posterior ao ajuste, mas não
 estabelece validade causal ou de negócio.
 
-!!! caution "A seleção permanece em aberto"
-    O baseline numérico tem silhueta maior que a configuração PCA selecionada no
-    notebook. As variáveis de hora e mês também não alteram os escores armazenados do
-    baseline. A escolha final precisa, portanto, de uma justificativa documentada com
-    múltiplos critérios e de uma verificação de que cada candidato recebeu as colunas
-    pretendidas. O ARI é apresentado apenas como diagnóstico externo e não deve orientar
-    o ajuste não supervisionado.
+!!! note "Comparação exploratória histórica"
+    Esses escores 80/20 documentam apenas a exploração anterior. A seleção publicada
+    usa o protocolo cronológico treino/validação/teste do notebook 03: K-Means com
+    variáveis elétricas obteve silhueta 0,823 e ARI de bootstrap 0,999 na validação.
 
-## Situação do notebook de modelagem
+## Resultado publicado da modelagem
 
-`03_Modeling.ipynb` declara explicitamente que não possui resultados na versão atual.
-Nenhum desempenho de modelo final, limiar de produção ou avaliação externa congelada
-deve ser inferido a partir dos notebooks de EDA ou pré-processamento.
+`03_Modeling.ipynb` seleciona K-Means com variáveis elétricas, calibra o Isolation
+Forest na validação, avalia o teste congelado de novembro–dezembro e publica o modelo
+v1.1. A silhueta no teste é 0,768; o filtro de transições reduz os alertas do teste de
+49 para 5, preservando `is_anomaly_raw` para auditoria. Consulte [Modelagem](modeling.md)
+e [Avaliação](evaluation.md) para o protocolo completo.

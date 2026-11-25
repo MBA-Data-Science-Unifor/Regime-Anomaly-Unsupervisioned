@@ -6,7 +6,7 @@
             ↓
     01_EDA.ipynb
             ↓
-    02_preprocessing.ipynb
+    02_Preprocessing.ipynb
             ↓
     03_Modeling.ipynb
             ↓

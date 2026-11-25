@@ -97,7 +97,7 @@ poderá ser medida pela primeira vez.
 
 ## Filtro de transição (aplicado na v1.1)
 
-O notebook 05 aplicou o filtro de fronteira: 59 → 7 alertas na validação e 49 → 5
+A seção 10 do notebook 03 aplica o filtro de fronteira: 59 → 7 alertas na validação e 49 → 5
 alertas no teste. A planilha de triagem mantém todos os 579 alertas não filtrados, para
 que a operação ainda possa confirmar que as transições não são de interesse; se forem,
 republicar com `transition_filter=False`.

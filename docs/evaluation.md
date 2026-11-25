@@ -17,19 +17,14 @@ Regime shares stay close across periods: idle inductive 38% / 42% / 41%, idle
 capacitive 24% / 21% / 24%, production 38% / 37% / 34% (train / validation / test).
 
 
-# Probabilistic and anomaly evidence
+# Anomaly evidence
 
-- GMM likelihood, AIC/BIC diagnostics, and assignment uncertainty;
-- Isolation Forest score distribution and sensitivity to contamination;
-- stability of the top-ranked anomaly set;
-- review by time window and operating context.
-- signal distribution by unsupervised profile, hour, and day type;
-- comparison between the global baseline and a contextual detector, including alert persistence.
+- the Isolation Forest threshold is 0.6247: the 99th percentile of validation scores;
+- the top 1% on validation overlaps 87% on average across five seeds (Jaccard), which
+  supports reproducibility of the highest-ranked signals;
+- around 40% of validation alerts recur at the same weekday and time in three or more
+  weeks, so recurrence is operational context rather than proof of a fault.
 
-- the top 1% on validation overlaps 87% on average across five seeds (Jaccard);
-- about 40% of validation alerts repeat at the same weekday and time in three or more
-  weeks (for example, Sunday 08:45 every week). These are more likely scheduled events
-  than faults and must be reviewed with plant operations;
 - the 1% rate is an operating assumption: there are no fault labels to estimate it.
 
 ## External agreement with Load_Type
@@ -58,7 +53,7 @@ equalize class rates, or turn an alert into a confirmed failure.
 
 ## Transition filter (model v1.1)
 
-Notebook 05 suppresses alerts on regime boundaries, keeping the v1.0 threshold. The
+Section 10 of notebook 03 suppresses alerts on regime boundaries, keeping the v1.0 threshold. The
 decision rule required boundary alerts to be at least 3× the boundary reading share on
 validation; the observed lift was 9.5×. The rule was written after notebook 04 had
 already shown that 88% of validation alerts (90% on test) fall on boundaries, so it
@@ -86,7 +81,7 @@ not an independent evaluation of the filter; and in continuous operation an aler
 ## Guardrails respected
 
 - Load_Type never entered a fit and was used for agreement only after freezing. It was
-  inspected on train only, in notebook 02b, and that inspection did shape one design
+  inspected on train only, in notebook 02, and that inspection did shape one design
   choice: excluding calendar features from the regime set (D3). This is a deliberate,
   disclosed use of the label before freezing;
 - the anomaly threshold was chosen on validation and reported on test;

@@ -4,7 +4,7 @@
 | --- | --- |
 | Conjunto bruto da indústria siderúrgica | disponível localmente |
 | Notebook de EDA | implementado; revisão em andamento |
-| Notebooks de preparação | 02 (comparação de configurações) e 02b (protocolo usado pelo modelo); decisões aguardando aprovação |
+| Notebook de preparação | 02 (síntese exploratória e protocolo publicado); decisões aguardando aprovação |
 | Módulo de pré-processamento | `preprocessing.py` com testes |
 | Notebook de modelagem | implementado com protocolo fixado antes dos resultados |
 | Modelo selecionado | K-Means, três regimes, apenas variáveis elétricas |
@@ -13,20 +13,9 @@
 | Avaliação congelada | concluída em novembro–dezembro |
 | Pacote serializado | `final_model.joblib` com `ModelBundle.predict` e testes |
 | Manifesto de integridade | `metadata/manifest.json` com SHA-256 por artefato e proveniência dos dados brutos; verificado por `uv run regime-analysis` |
-| Reprodução | `uv run invoke notebooks` executa 01–05 em ordem |
+| Reprodução | `uv run invoke notebooks` executa 01–04 em ordem |
 | Streamlit | painel de monitoramento (visão geral, monitoramento, alertas, modelos, relatórios) que lê os resultados publicados, mais uma página que executa o modelo em um CSV enviado |
 | MkDocs | atualizado até a avaliação |
-
-| Dicionário de dados | gerado localmente |
-| Figuras exploratórias | 21 geradas localmente, incluindo rastreamento pós-hoc de anomalias |
-| Tabelas exploratórias | 5 geradas localmente |
-| K-Means/GMM com três regimes | baselines exploratórios concluídos |
-| Isolation Forest | baseline global concluído; comparação contextual pendente |
-| Notebook de preparação | implementado; configuração em revisão |
-| Protocolo do modelo final | pendente |
-| Avaliação congelada | pendente |
-| Streamlit | dashboard de monitoramento, alertas e relatórios disponível |
-| MkDocs | atualizado para o conjunto de dados e a metodologia atuais |
 
 ## Pendências
 
@@ -47,7 +36,7 @@ Os itens 1–3 dependem de pessoas. Cada um está preparado em
 - **Tratamento de timestamps na EDA.** O notebook 01 agrupa pela data da fonte, que já
   atribui a leitura das 24:00 ao dia que ela encerra (verificado em 100% das linhas
   contra os timestamps corrigidos). A correção cronológica só é necessária onde a ordem
-  importa e é aplicada no notebook 02b; o notebook 01 agora documenta essa convenção.
+  importa e é aplicada no notebook 02; o notebook 01 agora documenta essa convenção.
 - **Lacunas de reprodutibilidade.** O `nbconvert` agora está declarado no grupo
   `analysis`, o `requirements.txt` é exportado do `uv.lock` (antes era um freeze parcial
   em UTF-16 sem Streamlit nem Plotly) e a CI também verifica a formatação.

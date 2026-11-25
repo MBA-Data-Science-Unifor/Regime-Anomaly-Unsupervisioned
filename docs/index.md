@@ -14,7 +14,7 @@ complementary task.
 | EDA | implemented and documented |
 | Data dictionary | generated locally |
 | Exploratory figures and tables | generated locally; excluded from Git |
-| Preparation notebooks | implemented (02 and 02b); decisions pending team approval |
+| Preparation notebook | implemented as 02; decisions pending team approval |
 | Final model comparison | complete: K-Means, three regimes, electrical features only |
 | Frozen evaluation | complete on November–December |
 | Anomaly detector | Isolation Forest with transition filter (model v1.1) |
