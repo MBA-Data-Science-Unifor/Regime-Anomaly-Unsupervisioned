@@ -9,7 +9,7 @@ from pathlib import Path
 import joblib
 import pandas as pd
 
-from .config import ARTIFACTS, MODELS_DIR, RAW_DIR, PREPROCESSING_PATH
+from .config import MODELS_DIR, PREPROCESSING_PATH, RAW_DIR
 
 DEFAULT_DATASET = RAW_DIR / "Steel_industry_data.csv"
 LABEL_COLUMN = "Load_Type"

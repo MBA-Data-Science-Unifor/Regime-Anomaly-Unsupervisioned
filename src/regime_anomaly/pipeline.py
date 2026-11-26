@@ -7,33 +7,34 @@ SHA-256 hashes in ``metadata/manifest.json``.
 
 from __future__ import annotations
 
+import json
 import sys
 from collections import Counter
-
 from pathlib import Path
-from .data import LABEL_COLUMN, load_data
+
+import joblib
+import numpy as np
+import pandas as pd
+
 from .artifacts import MANIFEST, verify_manifest
 from .config import (
     ARTIFACTS,
+    METADATA_DIR,
     MODELS_DIR,
     PROCESSED_DIR,
     RAW_DIR,
     ensure_artifact_dirs,
-    METADATA_DIR,
 )
+from .data import LABEL_COLUMN, load_data
 from .preprocessing import (
+    FEATURE_CATEGORICAL,
     FEATURE_CONFIGS,
     FEATURE_DELETED,
-    FEATURE_CATEGORICAL,
     FEATURE_NUMERIC,
     FEATURE_REPORTED,
-    split_columns,
     build_preprocessor,
+    split_columns,
 )
-import pandas as pd
-import numpy as np
-import joblib
-import json
 
 ARTIFACT_CONTRACT = {
     "raw_data": "data/raw/Steel_industry_data.csv",
@@ -87,11 +88,10 @@ def run_preprocessing():
         "feature_reporting_only": FEATURE_REPORTED,
         "feature_deleted": FEATURE_DELETED,
         "target": LABEL_COLUMN,
-        "chosen_config": "numeric + pca90",
         "split_strategy": "temporal_80_20",
-        "n_rows_total": int(len(df)),
-        "n_train": int(len(X_train)),
-        "n_test": int(len(X_test)),
+        "n_rows_total": len(df),
+        "n_train": len(X_train),
+        "n_test": len(X_test),
         "pca_components": [f"PC{i + 1}" for i in range(X_train_p.shape[1])],
         "train_date_range": [str(X_train["date"].min()), str(X_train["date"].max())],
         "test_date_range": [str(X_test["date"].min()), str(X_test["date"].max())],

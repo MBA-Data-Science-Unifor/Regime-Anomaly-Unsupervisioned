@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 
 import pandas as pd
+
 from .config import ARTIFACTS, PREPROCESSING_PATH
 
 RESULTS_PATH = ARTIFACTS / "data" / "processed" / "analysis_results.csv"

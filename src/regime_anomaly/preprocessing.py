@@ -23,12 +23,12 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+from sklearn.cluster import KMeans
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
+from sklearn.metrics import adjusted_rand_score, silhouette_score
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, adjusted_rand_score
 
 from .config import RANDOM_STATE
 from .data import LABEL_COLUMN, snake_case
