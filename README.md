@@ -45,9 +45,9 @@ bruto com o filtrado. Essas simulações não são falhas confirmadas.
 
 ## Equipe
 
-- Alexandre Franco
-- Caio Cunha Franco
-- Rodrigo Franco
+- Alexandre Franco — Analista de dados e modelagem
+- Caio Cunha Franco — Engenheiro de IA
+- Rodrigo Franco — Engenheiro de dados
 
 ## Notebooks
 
@@ -132,4 +132,3 @@ intervalo e classifica após a leitura, sem prever antecipadamente o consumo.
 
 A documentação MkDocs descreve o problema, a origem dos dados, a metodologia,
 as impressões iniciais, as decisões adiadas e os critérios de avaliação.
-
