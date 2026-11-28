@@ -1,5 +1,13 @@
 # Generated artifacts
 
+## Production snapshot
+
+The versioned runtime allowlist is: `data/processed/analysis_results.csv`,
+`data/processed/prepared_dataset.csv`, `metadata/preprocessing.json`,
+`metadata/final_metrics.json`, `metadata/manifest.json`, and
+`models/final_model.joblib`. Streamlit reads this complete set; the final model also
+enables the published-model integration test. Other generated files remain ignored.
+
 This directory is the publication boundary between notebooks, reusable code, MkDocs,
 and Streamlit.
 

@@ -1,0 +1,96 @@
+{
+  "modelo": {
+    "conjunto": "regime",
+    "candidato": "kmeans",
+    "motivo": "maior silhouette entre os elegíveis",
+    "regimes": [
+      "ocioso indutivo",
+      "ocioso capacitivo",
+      "produção"
+    ]
+  },
+  "validacao": {
+    "tempo_ajuste_s": 0.13330630000018573,
+    "silhouette": 0.8226702885282484,
+    "davies_bouldin": 0.2609881586087202,
+    "calinski_harabasz": 44174.93198103584,
+    "menor_grupo": 0.21311475409836064,
+    "ari_sementes_media": 1.0,
+    "ari_sementes_min": 1.0,
+    "ari_bootstrap_media": 0.9991929762575994,
+    "ari_bootstrap_min": 0.9978449691288427,
+    "ari_temporal": 0.9989826366933094
+  },
+  "teste": {
+    "silhouette": 0.7676972788234627,
+    "davies_bouldin": 0.3318373573658568,
+    "calinski_harabasz": 33544.08165710955,
+    "menor_grupo": 0.24334016393442623,
+    "taxa_alerta": 0.008367486338797815
+  },
+  "proporcao_regimes": {
+    "train": {
+      "ocioso indutivo": 0.3798,
+      "ocioso capacitivo": 0.2371,
+      "produção": 0.3831
+    },
+    "validation": {
+      "ocioso indutivo": 0.4204,
+      "ocioso capacitivo": 0.2131,
+      "produção": 0.3665
+    },
+    "test": {
+      "ocioso indutivo": 0.4122,
+      "ocioso capacitivo": 0.2433,
+      "produção": 0.3444
+    }
+  },
+  "anomalia": {
+    "taxa_alerta_premissa": 0.01,
+    "limiar": 0.6247197920776203,
+    "jaccard_sementes_media": 0.8737130253259286
+  },
+  "concordancia_externa_teste": {
+    "modelo selecionado (regime/kmeans)": {
+      "ARI": 0.3418,
+      "NMI": 0.3043
+    },
+    "sensibilidade (regime_with_calendar/kmeans)": {
+      "ARI": 0.3552,
+      "NMI": 0.3148
+    },
+    "regra de calendário (usa rótulos do treino)": {
+      "ARI": 0.4943,
+      "NMI": 0.3417
+    }
+  },
+  "dados_sha256": "9b1cee6f9cb9cd9df2b95814ca90a9a2ff15b7f5f1fba0fae3c643e82072eacc",
+  "filtro_transicao": {
+    "versao_modelo": "1.1",
+    "ativo": true,
+    "regra": "lift de alertas em fronteira >= 3x na validação",
+    "lift_validacao": 9.50500983238131,
+    "limiar": 0.6247197920776203,
+    "por_particao": {
+      "train": {
+        "alertas_sem_filtro": 471.0,
+        "alertas_com_filtro": 96.0,
+        "taxa_sem_filtro": 0.020190329218106994,
+        "taxa_com_filtro": 0.00411522633744856
+      },
+      "validation": {
+        "alertas_sem_filtro": 59.0,
+        "alertas_com_filtro": 7.0,
+        "taxa_sem_filtro": 0.010075136612021859,
+        "taxa_com_filtro": 0.0011953551912568306
+      },
+      "test": {
+        "alertas_sem_filtro": 49.0,
+        "alertas_com_filtro": 5.0,
+        "taxa_sem_filtro": 0.008367486338797815,
+        "taxa_com_filtro": 0.0008538251366120218
+      }
+    },
+    "ressalva_teste": "recorrência analisada no ano todo; teste não totalmente independente"
+  }
+}

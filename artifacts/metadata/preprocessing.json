@@ -1,0 +1,79 @@
+{
+  "fonte": {
+    "arquivo": "artifacts/data/raw/Steel_industry_data.csv",
+    "sha256": "9b1cee6f9cb9cd9df2b95814ca90a9a2ff15b7f5f1fba0fae3c643e82072eacc"
+  },
+  "qualidade": {
+    "linhas": 35040,
+    "inicio": "2018-01-01T00:15:00",
+    "fim": "2019-01-01T00:00:00",
+    "valores_nulos": 0,
+    "timestamps_duplicados": 0,
+    "intervalos_irregulares": 0,
+    "energia_negativa": 0,
+    "fator_potencia_fora_0_100": 0,
+    "dias_desconhecidos": 0,
+    "status_desconhecidos": 0
+  },
+  "correcao_timestamp": "Leituras 00:00 (NSM=0) movidas para a meia-noite seguinte; timestamp = fim do intervalo.",
+  "particoes": {
+    "fronteiras_exclusivas_superiores": [
+      "2018-09-01T00:00:00",
+      "2018-11-01T00:00:00"
+    ],
+    "linhas": {
+      "train": 23328,
+      "validation": 5856,
+      "test": 5856
+    },
+    "teste_congelado": true
+  },
+  "conjuntos_de_features": {
+    "regime": [
+      "usage_kwh",
+      "lagging_current_reactive_power_kvarh",
+      "leading_current_reactive_power_kvarh",
+      "lagging_current_power_factor",
+      "leading_current_power_factor"
+    ],
+    "regime_with_calendar": [
+      "usage_kwh",
+      "lagging_current_reactive_power_kvarh",
+      "leading_current_reactive_power_kvarh",
+      "lagging_current_power_factor",
+      "leading_current_power_factor",
+      "hour_sin",
+      "hour_cos",
+      "dow_sin",
+      "dow_cos",
+      "is_weekend"
+    ],
+    "anomaly": [
+      "usage_kwh",
+      "lagging_current_reactive_power_kvarh",
+      "leading_current_reactive_power_kvarh",
+      "lagging_current_power_factor",
+      "leading_current_power_factor",
+      "hour_sin",
+      "hour_cos",
+      "is_weekend"
+    ]
+  },
+  "transformacoes": {
+    "energia": "log1p + StandardScaler",
+    "fator_de_potencia": "log1p(100 - PF) + StandardScaler",
+    "calendario": "seno/cosseno + StandardScaler",
+    "ajuste": "somente no treino"
+  },
+  "excluidas": {
+    "co2_tco2": "cópia quase linear do consumo",
+    "load_type": "reservada para avaliação externa"
+  },
+  "random_state": 42,
+  "versoes": {
+    "python": "3.12.11",
+    "pandas": "3.1.1",
+    "numpy": "2.5.4",
+    "scikit-learn": "1.9.1"
+  }
+}

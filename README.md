@@ -61,6 +61,14 @@ ajuste, sem utilizar o rótulo para treinar os modelos não supervisionados.
 
 ## Artefatos e versionamento
 
+### Snapshot de producao
+
+Em adicao ao CSV bruto, o Git deve conter somente o conjunto aprovado e lido na
+execucao: `analysis_results.csv`, `prepared_dataset.csv`, `preprocessing.json`,
+`final_metrics.json`, `manifest.json` e `final_model.joblib`. O modelo tambem e usado
+por `test_published_model_scores_raw_uci_rows`. Tabelas, imagens, modelos auxiliares e
+saidas intermediarias continuam regeneraveis e ignorados.
+
 O CSV bruto `artifacts/data/raw/Steel_industry_data.csv` é versionado para garantir uma
 execução reproduzível dos notebooks. As demais saídas regeneráveis não são versionadas
 para evitar crescimento do repositório. O `.gitignore` preserva apenas os arquivos

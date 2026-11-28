@@ -244,3 +244,12 @@ artifacts/notebooks/.*.ipynb
 *.parquet
 *.feather
 *.onnx
+
+# Deployment artifact allowlist. Streamlit is read-only in production; keep only
+# its approved runtime snapshot and the model fixture used by integration tests.
+!artifacts/data/processed/analysis_results.csv
+!artifacts/data/processed/prepared_dataset.csv
+!artifacts/metadata/final_metrics.json
+!artifacts/metadata/preprocessing.json
+!artifacts/metadata/manifest.json
+!artifacts/models/final_model.joblib
