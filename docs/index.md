@@ -2,21 +2,22 @@
 
 This project investigates operating regimes and unusual energy-consumption observations
 in a South Korean steel industry dataset. The analysis is unsupervised: Load_Type
-provides only the known cardinality of three regimes and is not used as an input feature
-or as a training label. A future supervised Load_Type classifier is a separate,
-complementary task.
+provides the cardinality of three regimes and informs design decisions, but is not an
+input feature or training label for the models. Training labels also map clusters to
+classes for post-hoc external evaluation. An experimental supervised Load_Type
+classifier is a separate, complementary task in notebook 03 and reviewed in notebook 04.
 
 ## Current state
 
 | Component | State |
 | --- | --- |
-| Raw dataset | available locally; excluded from Git |
+| Raw dataset | CSV tracked in Git |
 | EDA | implemented and documented |
 | Data dictionary | generated locally |
 | Exploratory figures and tables | generated locally; excluded from Git |
 | Preparation notebook | implemented as 02; decisions pending team approval |
 | Final model comparison | complete: K-Means, three regimes, electrical features only |
-| Frozen evaluation | complete on November–December |
+| Temporal evaluation | complete on November–December, previously exposed in full-year EDA |
 | Anomaly detector | Isolation Forest with transition filter (model v1.1) |
 | Streamlit | monitoring dashboard on published results; runs the model on uploaded CSV files |
 
@@ -38,3 +39,4 @@ names, the alert rate and the alerts themselves await plant and operations revie
 See [Initial Findings](initial-findings.md) for the exploratory evidence,
 [Modeling](modeling.md) and [Evaluation](evaluation.md) for the final results.
 See [Technical References](references.md) for the libraries, APIs, and official sources.
+The [Project History](project-history.md) records the findings, decisions and open work.

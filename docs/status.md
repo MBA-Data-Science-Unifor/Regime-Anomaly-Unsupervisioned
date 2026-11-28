@@ -10,9 +10,10 @@
 | Selected model | K-Means, three regimes, electrical features only |
 | Anomaly detector | Isolation Forest, 1% threshold calibrated on validation |
 | Transition filter | v1.1: alerts on regime boundaries suppressed (59 → 7 on validation) |
-| Frozen evaluation | complete on November–December |
+| Temporal evaluation | complete on November–December; earlier EDA covered the full year |
 | Serialized bundle | `final_model.joblib` with `ModelBundle.predict` and tests |
 | Integrity manifest | `metadata/manifest.json` with SHA-256 per artifact and raw-data provenance; checked by `uv run regime-analysis` |
+| Supervised classification | KNN in notebook 03, alternatives in 04; validation-to-test decline requires investigation |
 | Reproduction | `uv run invoke notebooks` runs 01–04 in order |
 | Streamlit | monitoring dashboard (overview, monitoring, alerts, models, reports) reading published results, plus a page that runs the model on an uploaded CSV |
 | MkDocs | updated through evaluation |
@@ -28,7 +29,8 @@ Items 1–3 depend on people. Each is prepared in [Team Review](team-review.md) 
 3. **Operations** triage of 579 alerts in `revisao_alertas_triagem.csv`, starting with
    38 isolated alerts in two episodes (15–23 July nights, 22 May morning), and
    confirmation that regime transitions are of no interest (basis of the v1.1 filter);
-4. record contribution history.
+4. expand individual contributions if needed; the reported roles are in the
+   [project history](project-history.md#team-and-responsibilities).
 
 ## Resolved
 

@@ -22,6 +22,7 @@ nav:
       - Implementation: implementation.md
       - Project Structure: project-analysis.md
       - Status: status.md
+      - Project History: project-history.md
       - Technical References: references.md
   - PBL Journey:
       - Problem Canvas: pbl/problem-canvas.md
@@ -62,6 +63,7 @@ plugins:
             Implementation: Implementação
             Project Structure: Estrutura do projeto
             Status: Situação
+            Project History: Histórico do projeto
             Technical References: Referências técnicas
             PBL Journey: Jornada PBL
             Problem Canvas: Canvas do problema

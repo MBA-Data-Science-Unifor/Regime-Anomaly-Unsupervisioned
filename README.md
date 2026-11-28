@@ -25,13 +25,23 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 - modelo selecionado por protocolo fixado antes dos resultados: **K-Means com três
   regimes** usando só variáveis elétricas — ocioso indutivo, ocioso capacitivo e produção;
 - **Isolation Forest** com limiar de 1% calibrado na validação; na v1.1, alertas em trocas de regime são suprimidos (49 → 5 alertas no teste);
-- avaliação final congelada em nov–dez; concordância com `Load_Type` é moderada
+- avaliação em nov–dez após a seleção do modelo; a EDA anterior incluiu todo o ano,
+  portanto o teste não constitui uma avaliação plenamente independente. A concordância com `Load_Type` é moderada
   (ARI 0,34) porque `Load_Type` segue uma tabela tarifária por horário, não o estado
   elétrico;
 - modelo, métricas, resultados e manifesto de integridade publicados em `artifacts/`;
 - decisões, nomes dos regimes e triagem dos alertas aguardam revisão da equipe; o material está em `04_Review.ipynb` e na página Team Review da documentação.
+- experimento supervisionado separado de KNN para `Load_Type`: F1 macro de 0,919 na
+  validação e 0,593 no teste histórico, com calendário; os resultados exigem investigação
+  da diferença entre períodos;
 - dashboard Streamlit de monitoramento (visão geral, monitoramento, alertas, modelos e
-  relatórios) lendo os resultados publicados, com página para testar o modelo em um CSV;
+  relatórios) lendo os resultados publicados, com teste por CSV e cenários sintéticos
+  para investigar a sensibilidade dos alertas;
+
+O dashboard organiza visão geral, monitoramento, alertas, modelos, cenários e artefatos
+em abas. A aba de artefatos mostra origem e verificação de integridade; a aba de cenários
+permite testar alterações sintéticas em uma leitura de validação e comparar o alerta
+bruto com o filtrado. Essas simulações não são falhas confirmadas.
 
 ## Equipe
 
@@ -43,8 +53,11 @@ três níveis de carga: `Light_Load`, `Medium_Load` e `Maximum_Load`.
 
 1. `01_EDA.ipynb`: qualidade, distribuições, relações, PCA, t-SNE e baselines não supervisionados;
 2. `02_Preprocessing.ipynb`: síntese da comparação exploratória e protocolo publicado — correção de timestamps, partição treino / validação / teste, conjuntos de features e transformações;
-3. `03_Modeling.ipynb`: seleciona os regimes, calibra o detector de anomalias, avalia o período de teste e publica os artefatos finais da versão v1.1;
-4. `04_Review.ipynb`: material para revisão da equipe — registro de decisões, evidências dos regimes e planilha de triagem dos alertas. Este notebook é somente de leitura: ele não reconfigura nem republica modelos.
+3. `03_Modeling.ipynb`: seleciona os regimes, calibra o detector de anomalias, publica a versão v1.1 e avalia um KNN supervisionado para `Load_Type`;
+4. `04_Review.ipynb`: revisão da equipe e experimentos de sensibilidade para os modelos supervisionado e não supervisionados, sem republicação automática.
+
+O notebook 03 compara também a concordância dos agrupamentos com `Load_Type` após o
+ajuste, sem utilizar o rótulo para treinar os modelos não supervisionados.
 
 ## Artefatos e versionamento
 
@@ -96,13 +109,16 @@ O `requirements.txt` é exportado do `uv.lock` (`uv export`) para quem usa `pip`
 
 A aplicação Streamlit apenas consome artefatos aprovados; treinamento não faz parte
 do processo web. Ela reproduz resultados históricos publicados como uma simulação de
-monitoramento, com atualização manual após novas publicações do pipeline. Alertas
+monitoramento e verifica alterações nos artefatos a cada 30 segundos enquanto a página
+está aberta. O botão de atualização manual continua disponível. A configuração nativa
+fica em `.streamlit/config.toml` e ativa a atualização ao salvar código em desenvolvimento.
+Essas atualizações não executam os notebooks nem buscam dados novos. Alertas
 indicam comportamento atípico para investigação operacional: não são diagnósticos de
 falha, previsões de manutenção ou ordens de serviço.
 
-Quando houver classificação supervisionada de `Load_Type`, ela será apresentada como
-comparação de regimes conhecidos e não substituirá a segmentação e a detecção de
-anomalias não supervisionadas.
+A classificação supervisionada de `Load_Type` é uma comparação separada e não substitui
+a segmentação e a detecção de anomalias não supervisionadas. Ela usa medições do mesmo
+intervalo e classifica após a leitura, sem prever antecipadamente o consumo.
 
 ## Documentação
 

@@ -2,21 +2,23 @@
 
 Este projeto investiga regimes operacionais e observações incomuns de consumo de energia
 em um conjunto de dados de uma indústria siderúrgica sul-coreana. A análise é não
-supervisionada: `Load_Type` fornece apenas a cardinalidade conhecida de três regimes e
-não é usado como variável de entrada nem como rótulo de treinamento. Uma classificação
-supervisionada futura de `Load_Type` será uma tarefa separada e complementar.
+supervisionada: `Load_Type` fornece a cardinalidade de três regimes e apoia decisões
+de desenho, mas não é entrada nem rótulo de treinamento dos modelos. Após a seleção,
+os rótulos do treino também são usados no mapeamento de clusters para avaliação externa.
+Uma classificação supervisionada experimental de `Load_Type` é uma tarefa separada e
+complementar, apresentada no notebook 03 e revista no notebook 04.
 
 ## Situação atual
 
 | Componente | Situação |
 | --- | --- |
-| Conjunto de dados bruto | disponível localmente; excluído do Git |
+| Conjunto de dados bruto | CSV versionado no Git |
 | EDA | implementada e documentada |
 | Dicionário de dados | gerado localmente |
 | Figuras e tabelas exploratórias | geradas localmente; excluídas do Git |
 | Notebook de preparação | implementado como 02; decisões aguardando aprovação da equipe |
 | Comparação final de modelos | concluída: K-Means, três regimes, apenas variáveis elétricas |
-| Avaliação congelada | concluída em novembro–dezembro |
+| Avaliação temporal | concluída em novembro–dezembro, com exposição prévia do período na EDA |
 | Detector de anomalias | Isolation Forest com filtro de transição (modelo v1.1) |
 | Streamlit | painel de monitoramento sobre os resultados publicados; executa o modelo em arquivos CSV enviados |
 
@@ -38,3 +40,5 @@ operação (consulte [Revisão da equipe](team-review.md) e [Situação](status.
 Consulte [Descobertas iniciais](initial-findings.md) para ver as evidências exploratórias,
 e [Modelagem](modeling.md) e [Avaliação](evaluation.md) para os resultados finais.
 Consulte [Referências técnicas](references.md) para as bibliotecas, APIs e fontes oficiais.
+O [Histórico do projeto](project-history.md) reúne as percepções, decisões e pendências
+identificadas ao longo das análises e revisões.

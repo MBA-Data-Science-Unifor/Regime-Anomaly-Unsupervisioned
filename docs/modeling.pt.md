@@ -73,9 +73,11 @@ sinais, o que não é métrica de erro porque carga não é rótulo de falha. Um
 futura pode testar escores contextuais alternativos, mas limiares e persistência dos
 alertas devem ser congelados fora dos dados usados para relato.
 
-Uma futura classificação supervisionada de `Load_Type` terá objetivo próprio: prever o
-regime conhecido e ser avaliada com divisão temporal, macro-F1 e acurácia balanceada. Ela
+O notebook 03 apresenta uma classificação supervisionada separada de `Load_Type`, com
+KNN e divisão temporal. Ela usa leituras do mesmo intervalo para classificar a carga,
 não transforma `Load_Type` em rótulo de falha e não valida o detector de anomalias.
+O notebook 04 compara alternativas sem substituir modelos publicados. Os resultados e
+a queda entre validação e teste estão em [Avaliação](evaluation.md).
 
 ## Candidatos adiados
 

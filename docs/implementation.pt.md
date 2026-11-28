@@ -1,5 +1,20 @@
 # Implementação
 
+O dashboard está organizado em abas de visão geral, monitoramento, alertas, modelos,
+cenários e artefatos. **Modelos** apresenta a finalidade e os limites do K-Means,
+Isolation Forest e experimento supervisionado KNN; apenas o pacote não supervisionado
+está disponível para inferência. Em **Cenários**, um dia de validação e valores de
+consumo, reativa e fator de potência podem ser escolhidos para testar alterações
+sintéticas sem retreinar ou publicar o modelo. A tabela mostra escore, alerta bruto,
+fronteira e alerta filtrado. Cenários não substituem rótulos de falha.
+
+A aba **Artefatos** identifica a origem de cada arquivo e compara seu SHA-256 com o
+manifesto. Arquivos ausentes, divergentes ou com proveniência conflitante não são
+consumidos pelas seções dependentes; quando não há entrada no manifesto, a interface
+avisa que a integridade não foi verificada. A preparação vem de `preprocessing.json`
+e `prepared_dataset.csv` do notebook 02; métricas, resultados e modelo vêm do notebook
+03. O uso de CSV enviado para inferência continua disponível nessa aba.
+
 ## Componentes
 
 | Componente | Responsabilidade |

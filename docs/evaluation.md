@@ -1,8 +1,8 @@
 # Evaluation
 
-The final evaluation ran once on the frozen test period (November–December), after the
-model, preprocessing and anomaly threshold were fixed. Values come from
-`artifacts/metadata/final_metrics.json`.
+The base model was evaluated on November–December after the model, preprocessing and
+anomaly threshold were fixed. Earlier exploratory analysis covered the full year, so
+this is not a fully independent test. Values come from `artifacts/metadata/final_metrics.json`.
 
 ## Internal evidence on test
 
@@ -16,6 +16,10 @@ model, preprocessing and anomaly threshold were fixed. Values come from
 Regime shares stay close across periods: idle inductive 38% / 42% / 41%, idle
 capacitive 24% / 21% / 24%, production 38% / 37% / 34% (train / validation / test).
 
+Mean silhouette by regime on validation / test was 0.921 / 0.813 (idle inductive),
+0.889 / 0.843 (idle capacitive), and 0.670 / 0.662 (production), on samples of
+5,000 readings per split. These internal measures do not establish operational truth.
+
 
 # Anomaly evidence
 
@@ -28,6 +32,32 @@ capacitive 24% / 21% / 24%, production 38% / 37% / 34% (train / validation / tes
 - the 1% rate is an operating assumption: there are no fault labels to estimate it.
 
 ## External agreement with Load_Type
+
+Notebook 03 compares all fitted K-Means and GMM candidates with `Load_Type` using
+ARI and NMI, as well as accuracy, balanced accuracy and macro F1 after mapping each
+cluster to its most frequent training label. Multiple clusters can map to the same
+class. This post-hoc comparison does not train or select the clustering models.
+Calendar features change the question and may improve label agreement without
+improving electrical regime discovery. The historical test is not independent.
+
+Notebook `03_Modeling.ipynb` includes a separate supervised KNN experiment. The
+configuration selected on validation uses calendar features and 15 neighbors: macro F1
+is 0.919 on validation and 0.593 on the historical test. Test accuracy is 69.9%,
+versus 53.1% for the training-majority baseline. Recall is 93.6% for Light_Load,
+36.4% for Maximum_Load, and 47.9% for Medium_Load. The decline between periods
+requires investigation; prior full-year exploration limits test independence. This
+classifies an already measured interval and does not validate anomaly detection.
+Notebook 04 additionally compares alternatives: Extra Trees with calendar features
+reached validation macro F1 0.954, but test macro F1 was 0.593, approximately the
+same as KNN. Removing one correlated feature changed validation silhouette from 0.821
+to 0.827 in a different feature space; this does not by itself justify replacement.
+
+Mapping each cluster to its most frequent training label gives test accuracy 59.6%,
+balanced accuracy 55.9%, and macro F1 54.0%, versus 53.1% for the majority training
+class. One-vs-rest AUC is 0.881 for Light_Load, 0.708 for Maximum_Load, and 0.749
+for Medium_Load. Scores are training class proportions within each cluster, not
+calibrated probabilities. These results concern Load_Type, not fault detection; no
+fault labels are available for anomaly precision or ROC.
 
 | Reference on test | ARI | NMI |
 | --- | --- | --- |

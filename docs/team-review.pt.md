@@ -63,7 +63,8 @@ Cada alerta recebe duas marcações objetivas:
 - **recorrente** — o mesmo dia da semana e intervalo gerou alerta em pelo menos três
   semanas distintas.
 
-**A maioria dos alertas são transições de regime.** As leituras de fronteira são 11,1%
+**A maioria dos alertas coincide com fronteiras de regime.** Isso não comprova que sejam
+transições normais: a classificação exige confirmação operacional. As leituras de fronteira são 11,1%
 de todas as leituras, mas 81,3% dos alertas (88% na validação, 90% no teste). Uma leitura
 de 15 minutos que abrange uma mudança de estado fica a meio caminho entre os dois estados
 e parece incomum. Os dois padrões mais frequentes são o desligamento do capacitor

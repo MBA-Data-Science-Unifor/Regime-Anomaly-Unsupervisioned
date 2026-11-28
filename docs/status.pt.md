@@ -10,9 +10,10 @@
 | Modelo selecionado | K-Means, três regimes, apenas variáveis elétricas |
 | Detector de anomalias | Isolation Forest, limiar de 1% calibrado na validação |
 | Filtro de transição | v1.1: alertas nas fronteiras de regime suprimidos (59 → 7 na validação) |
-| Avaliação congelada | concluída em novembro–dezembro |
+| Avaliação temporal | concluída em novembro–dezembro; a EDA prévia incluiu todo o ano |
 | Pacote serializado | `final_model.joblib` com `ModelBundle.predict` e testes |
 | Manifesto de integridade | `metadata/manifest.json` com SHA-256 por artefato e proveniência dos dados brutos; verificado por `uv run regime-analysis` |
+| Classificação supervisionada | KNN no notebook 03; alternativas no 04 e diferença entre validação e teste em investigação |
 | Reprodução | `uv run invoke notebooks` executa 01–04 em ordem |
 | Streamlit | painel de monitoramento (visão geral, monitoramento, alertas, modelos, relatórios) que lê os resultados publicados, mais uma página que executa o modelo em um CSV enviado |
 | MkDocs | atualizado até a avaliação |
@@ -29,7 +30,8 @@ Os itens 1–3 dependem de pessoas. Cada um está preparado em
    pelos 38 alertas isolados em dois episódios (noites de 15–23 de julho, manhã de 22 de
    maio), e confirmação de que as transições de regime não são de interesse (base do
    filtro v1.1);
-4. registrar o histórico de contribuições.
+4. detalhar as contribuições individuais, se necessário; as funções informadas estão no
+   [histórico do projeto](project-history.md#equipe-e-responsabilidades).
 
 ## Resolvido
 
