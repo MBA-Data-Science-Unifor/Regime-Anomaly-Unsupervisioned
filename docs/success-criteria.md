@@ -17,10 +17,12 @@
 
 ## Evaluation
 
-- keep Load_Type outside training features;
+- keep Load_Type outside model input features; supervised training uses it as a label
+  and external evaluation uses it as a reference;
 - do not use supervised metrics during EDA;
-- reserve external agreement measures for the frozen evaluation protocol;
-- report failure cases, sensitivity, and limitations;
+- report external agreement without training the cluster models on the labels, and
+  acknowledge that the historical test is not fully independent;
+- report alerts and limitations; fault recall requires labels that are not available;
 - distinguish exploratory findings from approved conclusions.
 
 ## Delivery
@@ -31,3 +33,6 @@
 - build MkDocs in strict mode;
 - keep Streamlit read-only with respect to training;
 - maintain passing tests and an integrity manifest before final publication.
+
+Selection thresholds and proposed business criteria are in the
+[PBL Canvas](pbl/problem-canvas.md). Business and alert-usefulness targets are not yet approved.

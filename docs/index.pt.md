@@ -42,3 +42,6 @@ e [Modelagem](modeling.md) e [Avaliação](evaluation.md) para os resultados fin
 Consulte [Referências técnicas](references.md) para as bibliotecas, APIs e fontes oficiais.
 O [Histórico do projeto](project-history.md) reúne as percepções, decisões e pendências
 identificadas ao longo das análises e revisões.
+O [Canvas PBL](pbl/problem-canvas.md) responde às 11 perguntas de negócio, dados,
+critérios de sucesso e ações esperadas; o [Quadro PBL](pbl/pbl-board.md) acompanha
+as pendências.

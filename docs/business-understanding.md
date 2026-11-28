@@ -16,6 +16,11 @@ dataset that:
 - signals unusual observations without claiming a fault diagnosis;
 - prepares evidence for later model comparison and a read-only application.
 
+As a separate complementary task, the project evaluates supervised `Load_Type`
+classification using readings from the same interval. This does not validate anomaly
+alerts. The [PBL Canvas](pbl/problem-canvas.md) answers the 11 questions on business
+context, goals, data, risks and actions, distinguishing hypotheses from evidence.
+
 ## Guiding questions
 
 - Which variables best distinguish low, medium, and high operating behavior?

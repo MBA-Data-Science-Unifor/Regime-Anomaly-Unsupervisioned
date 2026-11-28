@@ -18,6 +18,13 @@ Industry Energy Consumption* que:
 - produza evidências para a comparação posterior de modelos e para uma aplicação
   somente leitura.
 
+Como tarefa complementar, o projeto testa classificação supervisionada de `Load_Type`
+usando medições do mesmo intervalo. As abordagens respondem a perguntas distintas;
+a classificação não valida os alertas de anomalia.
+
+O [Canvas PBL](pbl/problem-canvas.md) reúne as 11 perguntas de contexto, dor, metas,
+dados, riscos e ações, distinguindo hipóteses de negócio das evidências verificadas.
+
 ## Perguntas orientadoras
 
 - Quais variáveis melhor distinguem comportamentos operacionais baixo, médio e alto?

@@ -17,10 +17,12 @@
 
 ## Avaliação
 
-- manter `Load_Type` fora das variáveis de treinamento;
+- manter `Load_Type` fora das entradas dos modelos; o experimento supervisionado usa
+  seus valores como rótulo de treino e a avaliação externa usa-os como referência;
 - não usar métricas supervisionadas durante a EDA;
-- reservar medidas de concordância externa para o protocolo de avaliação congelado;
-- relatar casos de falha, sensibilidade e limitações;
+- relatar concordância externa sem usá-la para treinar os agrupamentos e reconhecer
+  que o teste histórico não é plenamente independente;
+- relatar alertas e limitações; a sensibilidade para falhas requer rótulos ainda ausentes;
 - distinguir descobertas exploratórias de conclusões aprovadas.
 
 ## Entrega
@@ -31,3 +33,7 @@
 - construir o MkDocs em modo estrito;
 - manter o Streamlit somente leitura em relação ao treinamento;
 - manter testes aprovados e um manifesto de integridade antes da publicação final.
+
+Os valores da regra de seleção e as propostas de sucesso de negócio estão no
+[Canvas PBL](pbl/problem-canvas.md). As metas de negócio e de utilidade dos alertas
+ainda precisam de aprovação operacional.
