@@ -2,14 +2,20 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 
 import pandas as pd
 
-from .config import ARTIFACTS, PREPROCESSING_PATH
+from .config import ARTIFACTS
 
 RESULTS_PATH = ARTIFACTS / "data" / "processed" / "analysis_results.csv"
 METRICS_PATH = ARTIFACTS / "metadata" / "final_metrics.json"
+MODEL_PATH = ARTIFACTS / "models" / "final_model.joblib"
+PREPROCESSING_PATH = ARTIFACTS / "metadata" / "preprocessing.json"
+PREPARED_PATH = ARTIFACTS / "data" / "processed" / "prepared_dataset.csv"
+MANIFEST_PATH = ARTIFACTS / "metadata" / "manifest.json"
+RAW_PATH = ARTIFACTS / "data" / "raw" / "Steel_industry_data.csv"
 
 
 # Accept original UCI names during the transition; publish canonical names later.
@@ -55,7 +61,8 @@ def artifact_status() -> dict[str, bool]:
         "results": RESULTS_PATH.exists(),
         "metrics": METRICS_PATH.exists(),
         "model": (ARTIFACTS / "models" / "final_model.joblib").exists(),
-        "preprocessor": (ARTIFACTS / "models" / "preprocessor.joblib").exists(),
+        "preprocessing": PREPROCESSING_PATH.exists(),
+        "prepared": PREPARED_PATH.exists(),
     }
 
 
@@ -67,6 +74,81 @@ def metrics_version() -> int:
 def results_version() -> int:
     """Use file mtime as a cache key without writing any artifact."""
     return RESULTS_PATH.stat().st_mtime_ns if RESULTS_PATH.exists() else 0
+
+
+def artifact_versions() -> tuple[int, ...]:
+    """Version watched artifacts so changes trigger a dashboard refresh."""
+    return tuple(
+        path.stat().st_mtime_ns if path.exists() else 0
+        for path in (
+            RESULTS_PATH,
+            METRICS_PATH,
+            MODEL_PATH,
+            PREPROCESSING_PATH,
+            PREPARED_PATH,
+            MANIFEST_PATH,
+            RAW_PATH,
+        )
+    )
+
+
+def audit_artifacts() -> pd.DataFrame:
+    """Compare notebook outputs and raw data against the published manifest."""
+    entries = [
+        ("Dados brutos", RAW_PATH, "Fonte UCI"),
+        ("Base preparada", PREPARED_PATH, "Notebook 02"),
+        ("Preparação", PREPROCESSING_PATH, "Notebook 02"),
+        ("Resultados", RESULTS_PATH, "Notebook 03"),
+        ("Métricas", METRICS_PATH, "Notebook 03"),
+        ("Modelo", MODEL_PATH, "Notebook 03"),
+    ]
+    try:
+        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        if not isinstance(manifest, dict):
+            manifest = {}
+    except (OSError, ValueError):
+        manifest = {}
+    rows = []
+    for name, path, origin in entries:
+        key = path.relative_to(ARTIFACTS).as_posix()
+        expected = (
+            manifest.get("dados_brutos", {}).get("sha256")
+            if path == RAW_PATH
+            else manifest.get("artefatos", {}).get(key)
+        )
+        if not path.is_file():
+            status = "Ausente"
+        elif not expected:
+            status = "Não verificado"
+        else:
+            try:
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                status = "Íntegro" if digest == expected else "Divergente"
+            except OSError:
+                status = "Indisponível"
+        rows.append({"Artefato": name, "Origem": origin, "Arquivo": key, "Integridade": status})
+    audit = pd.DataFrame(rows)
+    # Metadata must describe the same raw file; equal file hashes alone do not
+    # guarantee that outputs from different runs share the same provenance.
+    try:
+        prep = json.loads(PREPROCESSING_PATH.read_text(encoding="utf-8"))
+        metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
+        source_hashes = [
+            prep.get("fonte", {}).get("sha256"),
+            metrics.get("dados_sha256"),
+            manifest.get("dados_brutos", {}).get("sha256"),
+        ]
+        known = {value for value in source_hashes if value}
+        if len(known) > 1:
+            affected = audit["Artefato"].isin(
+                ["Base preparada", "Preparação", "Resultados", "Métricas", "Modelo"]
+            )
+            audit.loc[affected & (audit["Integridade"] == "Íntegro"), "Integridade"] = (
+                "Proveniência divergente"
+            )
+    except (OSError, ValueError, TypeError, AttributeError):
+        pass
+    return audit
 
 
 def parse_timestamps(values: pd.Series) -> pd.Series:
@@ -90,6 +172,22 @@ def load_results(_version: int) -> pd.DataFrame:
     frame = frame.rename(
         columns={key: value for key, value in COLUMN_ALIASES.items() if key in frame}
     )
+    for column in ("is_anomaly", "is_anomaly_raw", "regime_boundary"):
+        if column in frame:
+            frame[column] = (
+                frame[column]
+                .map(
+                    {
+                        True: True,
+                        False: False,
+                        "True": True,
+                        "False": False,
+                        "true": True,
+                        "false": False,
+                    }
+                )
+                .astype("boolean")
+            )
     if "timestamp" in frame:
         frame["timestamp"] = parse_timestamps(frame["timestamp"])
         frame = frame.dropna(subset=["timestamp"]).sort_values("timestamp")
@@ -119,8 +217,30 @@ def alert_severity(frame: pd.DataFrame) -> pd.Series:
     if "alert_severity" in frame:
         return frame["alert_severity"].fillna("Normal").astype(str)
     if "is_anomaly" in frame:
-        return frame["is_anomaly"].map({True: "Atenção", False: "Normal"}).fillna("Normal")
+        return (
+            frame["is_anomaly"].map({True: "Atenção", False: "Normal"}).fillna("Sem classificação")
+        )
     return pd.Series("Sem classificação", index=frame.index)
+
+
+def alert_masks(frame: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
+    """Return kept and suppressed flags without inventing missing raw labels."""
+    empty = pd.Series(False, index=frame.index)
+    kept = frame["is_anomaly"].fillna(False).astype(bool) if "is_anomaly" in frame else empty
+    if "is_anomaly_raw" not in frame or "is_anomaly" not in frame:
+        return kept, empty.copy()
+    raw = frame["is_anomaly_raw"].eq(True).fillna(False)
+    known_unfiltered = frame["is_anomaly"].eq(False).fillna(False)
+    return kept, raw & known_unfiltered
+
+
+def daily_alert_counts(frame: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate the two published alert states on calendar days of the timestamps."""
+    kept, suppressed = alert_masks(frame)
+    values = pd.DataFrame(
+        {"timestamp": frame["timestamp"], "Mantidos": kept, "Suprimidos": suppressed}
+    )
+    return values.set_index("timestamp").resample("D").sum().reset_index()
 
 
 def load_preprocessing_data():

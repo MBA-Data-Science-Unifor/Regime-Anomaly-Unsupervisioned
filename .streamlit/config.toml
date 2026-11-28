@@ -1,0 +1,11 @@
+[server]
+# Reexecuta a aplicação em desenvolvimento quando o código-fonte é salvo.
+runOnSave = true
+
+[theme]
+base = "dark"
+primaryColor = "#59d8c3"
+backgroundColor = "#11142d"
+secondaryBackgroundColor = "#20284b"
+textColor = "#e8edf8"
+font = "sans serif"
